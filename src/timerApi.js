@@ -12,8 +12,37 @@ export const timerApi = createApi({
             }),
 
         }),
+        pauseTimer: builder.mutation({
+            query: (body) => ({
+                url: 'timer/update',
+                method: 'POST',
+                body
+            })
+        }),
+        resumeTimer: builder.mutation({
+            query: (body) => ({
+                url: 'timer/update',
+                method: 'POST',
+                body
+            })
+        }),
+        completeTimer: builder.mutation({
+            query: (body) => ({
+                url: 'timer/update',
+                method: 'POST',
+                body
+            })
+        }),
+        status: builder.query({
+            query: (current_time) => ({
+                url: 'timer/status?current_time=' + current_time,
+                // body: { 'current_time': current_time },
+                // method:'GET',
+            })
+        })
+
 
     }),
 })
 
-export const { useStartTimerMutation } = timerApi;
+export const { useStartTimerMutation, usePauseTimerMutation, useCompleteTimerMutation, useStatusQuery, useResumeTimerMutation } = timerApi;

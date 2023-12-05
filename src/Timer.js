@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import moment from 'moment';
-import { useStartTimerMutation } from "./timerApi";
-import { Box, Center } from '@chakra-ui/react'
+import { useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./timerApi";
+import { Box, Center, Icon } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react'
+import { MdSkipNext } from "react-icons/md";
 const secondsToMinSecPadded = time => {
     const minutes = `${Math.floor(time / 60)}`.padStart(2, "0");
     const seconds = `${time - minutes * 60}`.padStart(3, "00");
@@ -13,14 +14,39 @@ const secondsToMinSecPadded = time => {
 // Api integration
 // Task CRUD
 // UI/UX
-const PomoTimer = (taskId) => {
+export const PomoTimer = (props) => {
+    // props.is_paused
+    // console.log(props.end_time, 'pomo');
+    // props - end_time
+    // if end_time is provided just use end_time 
+    // steps
+    // 1. check if any timer is running 
+    // 2. if yes , get the end_time of that time 
+    // 3. start timer without clicking start
     // we need taskId
+    const timeConfig = '25:00'
+    const [timer, setTimer] = useState()
+    // Mutation
+    const [trigger, data] = useStartTimerMutation() // put it on top of hierarcy to pass the trigger down
+
+    const pausingApi = usePauseTimerMutation()
+    const resumeApi = useResumeTimerMutation()
+    const completedApi = useCompleteTimerMutation()
+
     const onStart = () => {
+        trigger({ 'start_time': new Date().toString(), 'task': 13 })
+    }
+
+    const onPause = () => {
+        pausingApi[0]({ 'state': 'pause', 'current_time': new Date().toString(), 'timer': data.isUninitialized ? props.timer_id : data.data.id })
+    }
+    const onResume = () => {
+        resumeApi[0]({ 'state': 'unpause', 'current_time': new Date().toString(), 'timer': data.isUninitialized ? props.timer_id : data.data.id })
 
     }
-    const onPause = () => { }
-    const onResume = () => { }
-    const onCompleted = () => { }
+    const onCompleted = () => {
+        completedApi[0]({ 'state': 'completed', 'completion_time': new Date().toString() })
+    }
     // Default to 25:00
     // return <Timer time={''} timeConfig={'25:00'} onStart={onStart}
     //     onPause={onPause}
@@ -32,19 +58,61 @@ const PomoTimer = (taskId) => {
     const [time_count, setTimeCount] = useState(0)
     const [is_running, setIsRunning] = useState('inactive');//inactive/paused/running
     var resumeTime = () => {
-        startTimer()
-        setIsRunning('running')
-        console.log('Resuming')
+        // startTimer()
+        // setIsRunning('running')
+        // console.log('Resuming')
         onResume()
     }
-    var startTimer = () => {
+    // Isolated Functions
+    var startTimer = (end_time) => {
+        console.log(timer);
+        setIsRunning('running')
         clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
-            setTimeCount((time - new Date()) / (1000))
-            console.log('update')
+            if (end_time - new Date() <= 0) {
+                console.log('time is up')
+                clearInterval(intervalRef.current);//Stop interval
+                setTimeCount(0)// Reset Count
+                setIsRunning('inactive')//Now reseting state to in_active
+
+            }
+            else
+                setTimeCount((end_time - new Date()) / (1000))
+            // console.log('update')
         }, 1000)
 
     }
+    // If api start success than start timer
+    useEffect(() => {
+        if (data.isSuccess) {
+            console.log(data.data)
+            startTimer(moment(data.data.end_time))
+        }
+    }, [data])
+    useEffect(() => {
+
+        if (resumeApi[1].isSuccess) {
+            console.log('useeffect');
+            if (resumeApi[1].data) {
+                console.log('resume useeffect')
+                startTimer(moment(resumeApi[1].data.timer.end_time))
+            }
+        }
+    }, [resumeApi])
+    // To manage the already running timer
+    useEffect(() => {
+
+        if (props.end_time) {
+            console.log('end_time', props.end_time);
+            if (props.timer_status === 'running') { startTimer(moment(props.end_time)); console.log('running') }
+            else if (props.timer_status === 'paused') { setTimeCount((moment(props.end_time) - new Date()) / (1000)); console.log('paused') }
+        }
+        // to set status
+        if (props.timer_status) {
+            if (props.timer_status === 'paused') { setIsRunning('paused'); console.log('paused other'); }
+        }
+    }, [])
+    // useEffect(() => { }, [])
     var pauseTimer = () => {
         clearInterval(intervalRef.current)
         onPause()
@@ -52,19 +120,28 @@ const PomoTimer = (taskId) => {
     const instance = () => {
         if (is_running === 'inactive')
             return <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => {
-                startTimer()
+                // setTimer(moment(new Date()).add(1500, 'seconds'))
+                // startTimer()
                 setIsRunning('running')
                 onStart()
                 console.log('Starting')
             }}>Start</button>;
         if (is_running === 'paused')
-            return <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={resumeTime}>Resume</button>;
+            return <><button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => { console.log('resuming'); resumeTime() }}>Resume</button>   <Box>
+                <Icon as={MdSkipNext} fontSize={'35px'} ></Icon>
+            </Box>
+            </>
         if (is_running === 'running')
-            return <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => {
-                pauseTimer()
-                setIsRunning('paused')
-                console.log('pausing')
-            }}>Pause</button>;
+            return <>
+                <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => {
+                    pauseTimer()
+                    setIsRunning('paused')
+                    console.log('pausing')
+                }}>Pause</button>
+                <Box>
+                    <Icon as={MdSkipNext} fontSize={'35px'} ></Icon>
+                </Box>
+            </>;
 
     }
 
