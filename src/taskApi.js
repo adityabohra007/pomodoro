@@ -3,19 +3,32 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const taskApi = createApi({
     reducerPath: 'taskApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8081/pomo/task' }),
+    tagTypes: ['taskSelected', 'taskList'],
     endpoints: (builder) => ({
         fetchTask: builder.query({
-            query: () => ({ url: 'list' })
+            query: () => ({ url: 'list' }),
+            providesTags: ['taskList']
         }),
         taskSelected: builder.query({
-            query: () => ({ url: 'selected' })
+            query: () => ({ url: 'selected' }),
+            providesTags: ['taskSelected']
         }),
         taskSelect: builder.mutation({
             query: (body) => ({
                 url: 'selected',
-                method: 'PUT',
-                body: body
-            })
+                method: 'POST',
+                body: body,
+
+            }),
+            invalidatesTags: ['taskSelected']
+        }),
+        taskAdd: builder.mutation({
+            query: (body) => ({
+                url: 'create',
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['taskList']
         })
         // createTask
     })

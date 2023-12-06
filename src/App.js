@@ -58,7 +58,7 @@ const Main = () => {
   // { return isFetching && <h1>Loading</h1> }
   if (!status.isSuccess)
     return <h1>Loading</h1>
-  return <Box backgroundColor={colorFinder()} height={'100vh'}>
+  return <Box backgroundColor={colorFinder()} overflow={'hidden'} height={'auto'}>
     <Center >
       <Box height={'100vh'}>
         <Box border={'1px solid white'} mt={10} p={'5px 2px'}>

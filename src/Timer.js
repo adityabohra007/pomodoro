@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import moment from 'moment';
 import { useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./timerApi";
-import { Box, Center, Icon } from '@chakra-ui/react'
+import { Box, Center, Flex, Icon } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react'
 import { MdSkipNext } from "react-icons/md";
+import { useGetConfigQuery } from "./configApi";
 const secondsToMinSecPadded = time => {
     const minutes = `${Math.floor(time / 60)}`.padStart(2, "0");
     const seconds = `${time - minutes * 60}`.padStart(3, "00");
@@ -24,15 +25,16 @@ export const PomoTimer = (props) => {
     // 2. if yes , get the end_time of that time 
     // 3. start timer without clicking start
     // we need taskId
-    const timeConfig = '25:00'
+    const config = useGetConfigQuery();
+    console.log(config, config.isSuccess && config.data.data['pomo_time'], 'config in pomo');
+    const timeConfig = config.isSuccess ? JSON.stringify(config.data.data['pomo_time']) + ':00' : ""
     const [timer, setTimer] = useState()
     // Mutation
     const [trigger, data] = useStartTimerMutation() // put it on top of hierarcy to pass the trigger down
-
     const pausingApi = usePauseTimerMutation()
     const resumeApi = useResumeTimerMutation()
     const completedApi = useCompleteTimerMutation()
-
+    // Triggers
     const onStart = () => {
         trigger({ 'start_time': new Date().toString(), 'task': 13 })
     }
@@ -45,14 +47,11 @@ export const PomoTimer = (props) => {
 
     }
     const onCompleted = () => {
-        completedApi[0]({ 'state': 'completed', 'completion_time': new Date().toString() })
+        completedApi[0]({ 'state': 'completed', 'timer': data.isUninitialized ? props.timer_id : data.data.id })
     }
+    // 
     // Default to 25:00
-    // return <Timer time={''} timeConfig={'25:00'} onStart={onStart}
-    //     onPause={onPause}
-    //     onResume={onResume}
-    //     onCompleted={onCompleted}
-    // ></Timer>
+
 
     const intervalRef = useRef(null);
     const [time_count, setTimeCount] = useState(0)
@@ -128,7 +127,9 @@ export const PomoTimer = (props) => {
             }}>Start</button>;
         if (is_running === 'paused')
             return <><button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => { console.log('resuming'); resumeTime() }}>Resume</button>   <Box>
-                <Icon as={MdSkipNext} fontSize={'35px'} ></Icon>
+                <Flex p={'10px'} background={'gray'} onClick={() => { onCompleted() }}>
+                    <Icon as={MdSkipNext} width={10} color={'white'} fontSize={'35px'} zIndex={100} ></Icon>
+                </Flex>
             </Box>
             </>
         if (is_running === 'running')
@@ -138,22 +139,14 @@ export const PomoTimer = (props) => {
                     setIsRunning('paused')
                     console.log('pausing')
                 }}>Pause</button>
-                <Box>
-                    <Icon as={MdSkipNext} fontSize={'35px'} ></Icon>
-                </Box>
+                <Flex p={'10px'} background={'gray'} onClick={() => { onCompleted() }}>
+                    <Icon as={MdSkipNext} width={10} color={'white'} fontSize={'35px'} zIndex={100}   ></Icon>
+                </Flex>
             </>;
 
     }
 
-    // useEffect(() => {
-    //     if (isSuccess) {
-    //         console.log(taskData)
-    //         trigger({ 'start_time': new Date().toString(), 'task': 13 })
-    //     }
-    //     // startTimer()
-    //     // setTimer({ end_time: taskData[0].end_time })
-    //     // return () => { clearInterval(timerCounter) }
-    // }, [taskData])
+
     return (
         <Box padding={'25px 50px'} backgroundColor={'transparent'} borderRadius={10} mt={1}>
             <Text fontSize={'9xl'} color={'white'}>{time_count ? secondsToMinSecPadded(time_count) : timeConfig}</Text>
@@ -165,6 +158,7 @@ export const PomoTimer = (props) => {
         </Box>
     )
 }
+
 const TimerController = ({ taskId, onStart, onPause, onResume, onCompleted }) => {
     // Three methods should be provided to controller , such that , when we start ,what api to call , pause and complete
     const [timer, setTimer] = useState({ end_time: moment(new Date()).add(1500, 'seconds') })
