@@ -1,14 +1,20 @@
+import '@fontsource/ubuntu';
 import logo from './logo.svg';
 import './App.css';
 import { store } from './store';
-import { Provider } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import TimerController, { PomoTimer } from './Timer';
 import Task from './Task';
 import { useState } from 'react';
-import { Box, Button, ChakraProvider, HStack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
+import { Box, Button, ChakraProvider, HStack, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text, } from '@chakra-ui/react'
 import { Center, Square, Circle } from '@chakra-ui/react'
 import { useGetConfigQuery } from './configApi';
 import { useStatusQuery } from './timerApi';
+import Login, { AuthChecker } from './auth';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import theme from './theme';
+import { useLogoutMutation } from './authApi';
+import { removeToken } from './authSlice';
 // web-push add 
 function App() {
   // get selected task
@@ -21,20 +27,32 @@ function App() {
   // long
 
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <Provider store={store}>
-        <Main></Main>
+        {/* <Main></Main> */}
+        <GoogleOAuthProvider clientId="798224335861-ho4meomu5j6dpcmr5tk7vfesff2td6pl.apps.googleusercontent.com">
+          <AuthChecker>
+            <Main></Main>
+          </AuthChecker>
+        </GoogleOAuthProvider>
+
+        {/* <Login></Login> */}
       </Provider>
     </ChakraProvider>
   );
 }
-
+const GuestorUser = () => {
+  return
+}
+// Now convert it to guest and authenticated user
 const Main = () => {
+  const dispatch = useDispatch()
   const [taskId, setTaskId] = useState(null) // from selected api
   const [activeTimer, setActiveTimer] = useState('timer');
   // const [timerState]
   const { data, isLoading, isSuccess, isError, error, isFetching } = useGetConfigQuery()
   const status = useStatusQuery(encodeURI(new Date().toString()))
+  const logout = useLogoutMutation()
   // console.log(data, isLoading, isSuccess,error)
   const colorFinder = () => {
     if (activeTimer === 'timer')
@@ -47,7 +65,7 @@ const Main = () => {
   const timer_resolver = () => {
 
     if (activeTimer === 'timer')
-      return <PomoTimer timer_status={status.isSuccess && status.data.status} timer_id={status.isSuccess && status.data.id} end_time={status.isSuccess  && status.data.end_time }></PomoTimer>  //<TimerController end_time={{}} taskId={taskId} onCompleted={() => { }} onPause={() => { }} onResume={() => { }} onStart={() => { }}></TimerController>
+      return <PomoTimer timer_status={status.isSuccess && status.data.status} timer_id={status.isSuccess && status.data.id} end_time={status.isSuccess && status.data.end_time}></PomoTimer>  //<TimerController end_time={{}} taskId={taskId} onCompleted={() => { }} onPause={() => { }} onResume={() => { }} onStart={() => { }}></TimerController>
     // if (activeTimer === 'Short')
     //   return <TimerController end_time={{}} taskId={taskId} onCompleted={() => { }} onPause={() => { }} onResume={() => { }} onStart={() => { }}></TimerController>
     // if (activeTimer === 'Long')
@@ -59,6 +77,13 @@ const Main = () => {
   if (!status.isSuccess)
     return <h1>Loading</h1>
   return <Box backgroundColor={colorFinder()} overflow={'hidden'} height={'auto'}>
+    <HStack>
+      <Text color={'white'} fontWeight={'600'} fontSize={'22px'}>Pomodoro</Text>
+      <Link onClick={() => {
+        dispatch(removeToken())
+        logout[0]()
+      }}>Logout</Link>
+    </HStack>
     <Center >
       <Box height={'100vh'}>
         <Box border={'1px solid white'} mt={10} p={'5px 2px'}>
