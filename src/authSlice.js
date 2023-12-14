@@ -6,7 +6,9 @@ export const auth = createSlice({
     reducers: {
         addToken: (state, action) => {
             // console.log('updating ',action)
-            state.token = action.payload
+            if (action.payload !== -1) {
+                console.log(action.payload,'payload');
+                state.token = action.payload }
         },
         removeToken: (state, action) => {
             state.token = ''
@@ -14,5 +16,5 @@ export const auth = createSlice({
     }
 })
 
-export const { addToken,removeToken } = auth.actions
+export const { addToken, removeToken } = auth.actions
 export default auth.reducer;

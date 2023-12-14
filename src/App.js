@@ -1,20 +1,22 @@
 import '@fontsource/ubuntu';
-import logo from './logo.svg';
 import './App.css';
 import { store } from './store';
 import { Provider, useDispatch } from 'react-redux'
-import TimerController, { PomoTimer } from './Timer';
+
 import Task from './Task';
-import { useState } from 'react';
-import { Box, Button, ChakraProvider, HStack, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text, } from '@chakra-ui/react'
-import { Center, Square, Circle } from '@chakra-ui/react'
+import { useEffect, useState } from 'react';
+import { Box, Button, ChakraProvider, HStack, Link, Text, } from '@chakra-ui/react'
+import { Center } from '@chakra-ui/react'
 import { useGetConfigQuery } from './configApi';
 import { useStatusQuery } from './timerApi';
-import Login, { AuthChecker } from './auth';
+import { AuthChecker } from './auth';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import theme from './theme';
 import { useLogoutMutation } from './authApi';
 import { removeToken } from './authSlice';
+import BreakTimer from './BreakTimer';
+import PomoTimer from './PomoTimer';
+
 // web-push add 
 function App() {
   // get selected task
@@ -53,29 +55,43 @@ const Main = () => {
   const { data, isLoading, isSuccess, isError, error, isFetching } = useGetConfigQuery()
   const status = useStatusQuery(encodeURI(new Date().toString()))
   const logout = useLogoutMutation()
+  useEffect(() => {
+    if (status.isSuccess) {
+      if ((status.data['status'] === 'running') | (status.data['status'] === 'paused')) {
+        setActiveTimer('timer')
+      }
+      else {
+        if ((status.data['break_type'] === 'LONG') | (status.data['break_type'] === 'SHORT')) {
+          setActiveTimer(status.data['break_type'])
+        }
+      }
+    }
+  }, [status.isSuccess])
   // console.log(data, isLoading, isSuccess,error)
   const colorFinder = () => {
     if (activeTimer === 'timer')
       return isSuccess && data.data.theme.pomodoro
-    if (activeTimer === 'Short')
+    if (activeTimer === 'SHORT')
       return isSuccess && data.data.theme.short_break
-    if (activeTimer === 'Long')
+    if (activeTimer === 'LONG')
       return isSuccess && data.data.theme.long_break
   }
   const timer_resolver = () => {
 
     if (activeTimer === 'timer')
       return <PomoTimer timer_status={status.isSuccess && status.data.status} timer_id={status.isSuccess && status.data.id} end_time={status.isSuccess && status.data.end_time}></PomoTimer>  //<TimerController end_time={{}} taskId={taskId} onCompleted={() => { }} onPause={() => { }} onResume={() => { }} onStart={() => { }}></TimerController>
-    // if (activeTimer === 'Short')
-    //   return <TimerController end_time={{}} taskId={taskId} onCompleted={() => { }} onPause={() => { }} onResume={() => { }} onStart={() => { }}></TimerController>
-    // if (activeTimer === 'Long')
-    //   return <TimerController end_time={{}} taskId={taskId} onCompleted={() => { }} onPause={() => { }} onResume={() => { }} onStart={() => { }}></TimerController>
+    if (activeTimer === 'SHORT')
+      return <BreakTimer  {...status.data}></BreakTimer>
+    if (activeTimer === 'LONG')
+      return <BreakTimer   {...status.data}></BreakTimer>
+    else
+      return <Text>Something is wrong</Text>
 
 
   }
   // { return isFetching && <h1>Loading</h1> }
   if (!status.isSuccess)
-    return <h1>Loading</h1>
+    return <h1>Loading status</h1>
   return <Box backgroundColor={colorFinder()} overflow={'hidden'} height={'auto'}>
     <HStack>
       <Text color={'white'} fontWeight={'600'} fontSize={'22px'}>Pomodoro</Text>
@@ -91,8 +107,8 @@ const Main = () => {
             <Button _hover={{
               background: '#FF8F8F'
             }} background={activeTimer === 'timer' && '#FF8F8F'} opacity={1} borderRadius={3} onClick={() => setActiveTimer('timer')} p={'1px 5px'} variant={'ghost'} >Pomodoro</Button>
-            {/* <Button background={activeTimer === 'Short' && 'blue'} borderRadius={3} onClick={() => setActiveTimer('Short')} p={'1px 5px'}>Short Break</Button>
-            <Button background={activeTimer === 'Long' && 'green'} borderRadius={3} onClick={() => setActiveTimer('Long')} p={'1px 5px'}>Long Break</Button> */}
+            <Button background={activeTimer === 'Short' && 'blue'} borderRadius={3} onClick={() => setActiveTimer('SHORT')} p={'1px 5px'}>Short Break</Button>
+            <Button background={activeTimer === 'Long' && 'green'} borderRadius={3} onClick={() => setActiveTimer('LONG')} p={'1px 5px'}>Long Break</Button>
 
           </HStack>
           {timer_resolver()}

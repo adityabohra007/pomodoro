@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 import { AiFillBuild } from "react-icons/ai";
 import { useDisclosure } from '@chakra-ui/react'
+import { deleteCookie, getCookie, setCookie } from "./cookies"
 const Login = () => {
     const login = useLoginMutation()
     const [formData, setFormData] = useState({ 'email': '', 'password': '', 'isSubmitted': false })
@@ -22,14 +23,15 @@ const Login = () => {
     const google = useGoogleMutation();
 
     useEffect(() => {
-        if (google[1].isSuccess)
-            authDispatch(addToken(google[1].data.access))
+        if (google[1].isSuccess) { authDispatch(addToken(google[1].data.access)); setCookie('token', google[1].data.access) }
     }, [google[1].isSuccess])
 
     useEffect(() => {
-        if (login[1].isSuccess)
-            authDispatch(addToken(login[1].data.access))
-    }, [login[1].isSuccess,])
+        if (login[1].isSuccess) {
+            authDispatch(addToken(login[1].data.access));
+            setCookie('token', login[1].data.access);
+        }
+    }, [login[1].isSuccess])
 
     return <Box bg={'#ad4444'} minHeight={'100vh'} paddingTop={'100px'} >
         <Center>
@@ -84,20 +86,47 @@ const Login = () => {
             </VStack>
         </Center>
     </Box>
-
 }
 export const AuthChecker = (props) => {
-    const  auth = useSelector(state => state.auth)
+    // Steps
+    // Check if token in cookie
+    // if not redirect to login
+    // else call the api for user 
+    // if error 401 than delete the cookie
+    // than redirect to login page
+    const auth = useSelector(state => state.auth)
+    const dispatch = useDispatch()
     const user = useUserQuery();
+    const [loading, setLoading] = useState(true);
+    // 
+    // 
+    // useEffect
+    useEffect(() => {
+        var token = getCookie('token');
+        setTimeout(() => {
+            if (token) {
+                console.log('loading token to dispatch from cookie');
+                dispatch(addToken(token));
+                setLoading(false);
+                console.log('loading falsed');
+            }
+        }, 2000)
+
+    }, [])
+    useEffect(() => {
+        if (user.isError) {
+            console.log('deleting token')
+            deleteCookie('token')
+        }
+    }, [user.isError])
+    if (loading) return <Text>Loading1</Text>
     if (auth.token) {
+        console.log('auth.token is available')
         if (user.isSuccess) {
             return props.children
         }
     }
     return <Login></Login>
-
-
-
 }
 
 const BasicUsage = () => {
@@ -127,8 +156,5 @@ const BasicUsage = () => {
         </>
     )
 }
-
-
-
 
 export default Login;

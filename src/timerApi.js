@@ -1,9 +1,23 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { invalid } from 'moment';
-
+const baseQuery = fetchBaseQuery({
+    baseUrl: 'http://localhost:8081/pomo/',
+    prepareHeaders: (headers, { getState }) => {
+        const token = getState().auth.token
+        console.log(token)
+        if (token) {
+            console.log('Status token adding')
+            headers.set('Authorization', `Bearer ${token}`)
+            headers.set('Content-Type', 'application/json')
+            // console.log(headers, 'insider ');
+        }
+        console.log(headers, 'header ')
+        return headers
+    },
+    credentials: 'include'
+})
 export const timerApi = createApi({
     reducerPath: 'timerApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8081/pomo/' }),
+    baseQuery: baseQuery,
     tagTypes: ['status'],
     endpoints: (builder) => ({
         startTimer: builder.mutation({
@@ -38,15 +52,39 @@ export const timerApi = createApi({
         }),
         status: builder.query({
             query: (current_time) => ({
-                url: 'timer/status?current_time=' + current_time,
-                // body: { 'current_time': current_time },
-                // method:'GET',
+                url: 'timer/status',
             }),
             providesTags: ['status']
+        }),
+        breakTimerStart: builder.mutation({
+            query: (body) => ({
+                url: '/break/create',
+                body,
+                method: 'POST',
+            }),
+            invalidatesTags: ['status']
+
+        }),
+        breakTimerStop: builder.mutation({
+            query: (body) => ({
+                url: '/break/stop',
+                method: 'POST',
+            }),
+            invalidatesTags: ['status']
+
         })
+
 
 
     }),
 })
 
-export const { useStartTimerMutation, usePauseTimerMutation, useCompleteTimerMutation, useStatusQuery, useResumeTimerMutation } = timerApi;
+export const {
+    useStartTimerMutation,
+    usePauseTimerMutation,
+    useCompleteTimerMutation,
+    useStatusQuery,
+    useResumeTimerMutation,
+    useBreakTimerStartMutation,
+    useBreakTimerStopMutation
+} = timerApi;

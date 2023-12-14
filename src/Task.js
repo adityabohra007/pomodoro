@@ -1,4 +1,4 @@
-import { Button, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Button, Center, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
 import { useFetchTaskQuery, useTaskSelectMutation, useTaskSelectedQuery } from './taskApi'
 import { Box } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons'
@@ -8,7 +8,18 @@ import { useDrag } from 'react-dnd'
 import { useState, useEffect } from 'react';
 import { Input } from '@chakra-ui/react';
 const TaskForm = (props) => {
+    // onCancel,onSave,onDelete,type:create/edit,if create 'data' not required,
+    const onCancel = () => {
+        props.onCancel()
+    }
+    const onSave = () => {
+        props.onSave()
+    }
+    const onDelete = () => {
+        props.onDelete()
+    }
     const [addNote, setAddNote] = useState(false)
+    const [data, setData] = useState(props.create ? { 'title': '', 'description': '', 'want_to_focus': null } : props.data)
     return <Box borderRadius={10} marginBottom={5} background={'white'} width={'380px'}>
         <Box padding={5}>
             <Input placeholder='Name' border={'0'}
@@ -21,13 +32,15 @@ const TaskForm = (props) => {
                 }}></Input>
             <Text mt={2} fontWeight={'bold'}>Act/Est Pomodoros</Text>
             <Flex mt={2}>
-                <NumberInput min={0}  >
+                {/* To be done */}
+                <NumberInput min={0} value={0} isDisabled={true} >
                     <NumberInputField width={'100px'}></NumberInputField>
                     <NumberInputStepper>
                         <NumberIncrementStepper />
                         <NumberDecrementStepper />
                     </NumberInputStepper>
                 </NumberInput>
+                {/* to focus */}
                 <NumberInput min={0} ml={2} value={props.want_to_focus}>
                     <NumberInputField width={'100px'}></NumberInputField>
                     <NumberInputStepper>
@@ -46,10 +59,13 @@ const TaskForm = (props) => {
             </Flex>
         </Box>
         <Flex background={'#e8e8e8'} padding={5} borderBottomRadius={5} alignItems={'center'}>
-            <Link>Delete</Link>
+            {props.create ? <></> :
+                <Link>Delete</Link>
+            }
+
             <Flex marginLeft={'auto'}>
-                <Button>Cancel</Button>
-                <Button ml={2} background={'black'} color={'white'}>Save</Button>
+                <Button onClick={() => { onCancel() }}>Cancel</Button>
+                <Button ml={2} background={'black'} color={'white'} onClick={() => { onSave() }}>Save</Button>
             </Flex>
 
         </Flex>
@@ -74,10 +90,26 @@ const TaskItem = (props) => {
         return <TaskForm></TaskForm>
 }
 
+const TaskStats = () => {
+    return <Box width={'100%'} color={'white'} border={'1px solid white'} borderRadius={'2px'}>
+        <Flex justifyContent={'space-between'} w={'100%'}>
+            <VStack width={'50%'}>
+                <Text>Completion On</Text>
+                <Text>7:06(12.05hrs)</Text>
+            </VStack>
+            <VStack w={'50%'}>
+                <Text>Pomo Done</Text>
+                <Text>11/18</Text>
+            </VStack>
+        </Flex>
+    </Box>
+}
+
 const Task = () => {
     const { isLoading, isSuccess, error, data, isError, isFetching } = useFetchTaskQuery()
     const taskSelected = useTaskSelectedQuery()
     const taskSelect = useTaskSelectMutation()
+    const [addTask, setAddTask] = useState(false);
     // console.log(taskSelected.data.selected);
 
     useEffect(() => {
@@ -85,33 +117,36 @@ const Task = () => {
     }, [taskSelected.isSuccess])
     if (isLoading | taskSelected.isLoading) return <h5>Loading</h5>
     if (taskSelected.isSuccess)
-        return <Box marginTop={10} >
-            <VStack>
-                {isSuccess && data.map(item =>
-                    // <Radio value={item.id} key={item.id}  >
-                    <TaskItem onClick={() => {
-                        taskSelect[0]({ 'task': item.id })
-                        // setValue(item.id)
-                        // check if any timer is running than give warning
+        return <>
 
-                    }} key={item.id} {...item} selected={
-                        taskSelected.data && taskSelected.data.selected.task.id === item.id && true
-                    }></TaskItem>
-                )}
-                <Text textAlign={'center'} border={'3px dotted white'} background={'transparent'} width={'380px'} color={'white'} p={'7px'}>Add New Task</Text>
-                <Box width={'100%'} color={'white'} border={'1px solid white'} borderRadius={'2px'}>
-                    <Flex justifyContent={'space-between'} w={'100%'}>
-                        <VStack width={'50%'}>
-                            <Text>Completion On</Text>
-                            <Text>7:06(12.05hrs)</Text>
-                        </VStack>
-                        <VStack w={'50%'}>
-                            <Text>Pomo Done</Text>
-                            <Text>11/18</Text>
-                        </VStack>
-                    </Flex>
-                </Box>
-            </VStack>
-        </Box>
+
+            <Box marginTop={10} >
+                <VStack>
+                    {isSuccess && data.map(item =>
+                        <TaskItem onClick={() => {
+                            taskSelect[0]({ 'task': item.id })
+                            // check if any timer is running than give warning
+
+                        }} key={item.id} {...item} selected={
+                            taskSelected.data && taskSelected.data.selected.task.id === item.id && true
+                        }></TaskItem>
+                    )}
+                    {addTask ?
+                        <Center mt={'10px'}>
+                            <TaskForm
+                                onCancel={() => { setAddTask(false) }}
+                                create={true}
+                                onSave={() => {
+                                    // api call to save for new task
+                                }}></TaskForm>
+                        </Center>
+                        :
+                        <Text textAlign={'center'} border={'3px dotted white'} background={'transparent'} width={'380px'} color={'white'} p={'7px'} onClick={() => { console.log('Adding Waiting please'); setAddTask(true) }} >Add New Task</Text>}
+                    {/*  */}
+                    <TaskStats></TaskStats>
+                </VStack>
+            </Box>
+        </>
+
 }
 export default Task;
