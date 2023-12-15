@@ -5,7 +5,6 @@ export const auth = createSlice({
     initialState: { token: undefined, refresh_token: undefined },
     reducers: {
         addToken: (state, action) => {
-            // console.log('updating ',action)
             if (action.payload !== -1) {
                 console.log(action.payload,'payload');
                 state.token = action.payload }

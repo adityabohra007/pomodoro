@@ -10,15 +10,22 @@ import { secondsToMinSecPadded } from "./Timer";
 // 
 const BreakTimer = (props) => {
     // config, break?,break_type
+    // status
+    // running
+    // not running
+    // console.log('breaktimer',props);
     const config = useGetConfigQuery();
-    console.log(config, config.isSuccess && config.data.data['pomo_time'], 'config in pomo');
+    // console.log(config,'config--------' ,config.isSuccess && config.data.data['pomo_time'], 'config in pomo');
     // Setup
     const break_time = () => {
-        if (config.isSuccess && props.break_type) {
+        if (config.isSuccess) {
+            // console.log('break timer success',props.break_type);
             if (props.break_type === 'LONG') {
+                // console.log('LONG');
                 return JSON.stringify(config.data.data['long_break_time']) + ":00"
             }
             if (props.break_type === 'SHORT') {
+                // console.log('SHORT');
                 return JSON.stringify(config.data.data['short_break_time']) + ":00"
             }
         }
@@ -34,7 +41,7 @@ const BreakTimer = (props) => {
     const stopApi = useBreakTimerStopMutation()
     // Triggers
     const onStart = () => {
-        trigger({ 'start_time': new Date().toString(), 'task': 13 })
+        trigger({ 'break_type': props.break_type })
     }
 
     const onPause = () => {
@@ -42,38 +49,38 @@ const BreakTimer = (props) => {
     }
     // Default to 25:00
 
-
     const intervalRef = useRef(null);
     const [time_count, setTimeCount] = useState(0)
     const [is_running, setIsRunning] = useState('inactive');//inactive/paused/running
 
     // Isolated Functions
     var startTimer = (end_time) => {
-        console.log(timer);
-        setIsRunning('running')
-        clearInterval(intervalRef.current);
+        console.log(timer,'starting timer ');
+        setIsRunning('running')// for indication that timer is running
+        clearInterval(intervalRef.current);//remove any past timer
         intervalRef.current = setInterval(() => {
-            if (end_time - new Date() <= 0) {
+            if (end_time - new Date() <= 0) {//check if timeout
                 console.log('time is up')
                 clearInterval(intervalRef.current);//Stop interval
                 setTimeCount(0)// Reset Count
                 setIsRunning('inactive')//Now reseting state to in_active
             }
             else
-                setTimeCount((end_time - new Date()) / (1000))
-        }, 1000)
+                setTimeCount((end_time - new Date()) / (1000));// set time left 
+        }, 1000)//after every 1second
 
     }
     // If api start success than start timer
-    useEffect(() => {
-        if (data.isSuccess) {
-            console.log(data.data)
-            startTimer(moment(data.data.end_time))
-        }
-    }, [data])
+    // useEffect(() => {
+    //     if (data.isSuccess) {
+    //         console.log(data.data, 'now will start timer')
+    //         startTimer(moment(data.data.end_time))
+    //     }
+    // }, [data.isSuccess])
 
     useEffect(() => {
         if (config.isSuccess) {
+            console.log(break_time(), 'break timer ******');
             setTimeConfig(break_time())
 
         }
@@ -82,7 +89,7 @@ const BreakTimer = (props) => {
     useEffect(() => {
 
         if (props.end_time) {
-            console.log('end_time', props.end_time);
+            console.log('end_time', moment(props.end_time));
             if (props.id) { startTimer(moment(props.end_time)); console.log('running') }
             // else if (props.timer_status === 'paused') { setTimeCount((moment(props.end_time) - new Date()) / (1000)); console.log('paused') }
         }

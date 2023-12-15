@@ -1,5 +1,5 @@
-import { Button, Center, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Radio, RadioGroup, Text, Textarea, VStack } from '@chakra-ui/react';
-import { useFetchTaskQuery, useTaskSelectMutation, useTaskSelectedQuery } from './taskApi'
+import { Button, Center, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Radio, RadioGroup, Text, Textarea, Tr, VStack } from '@chakra-ui/react';
+import { useCreateTaskMutation, useDeleteTaskMutation, useFetchTaskQuery, useTaskSelectMutation, useTaskSelectedQuery, useUpdateTaskMutation } from './taskApi'
 import { Box } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import { MdSettings } from 'react-icons/md'
@@ -8,21 +8,34 @@ import { useDrag } from 'react-dnd'
 import { useState, useEffect } from 'react';
 import { Input } from '@chakra-ui/react';
 const TaskForm = (props) => {
+    const creating = useCreateTaskMutation()
+    const updating = useUpdateTaskMutation();
     // onCancel,onSave,onDelete,type:create/edit,if create 'data' not required,
     const onCancel = () => {
         props.onCancel()
     }
     const onSave = () => {
+        // 
+        if (props.create) { console.log('creating', data); creating[0](data) }
+        else {
+            updating[0]({ ...data })
+        }
         props.onSave()
+
     }
     const onDelete = () => {
         props.onDelete()
     }
-    const [addNote, setAddNote] = useState(false)
-    const [data, setData] = useState(props.create ? { 'title': '', 'description': '', 'want_to_focus': null } : props.data)
+    const [addNote, setAddNote] = useState(props.create && props.description ? true : false)
+    const [data, setData] = useState(props.create ? { 'title': '', 'description': null, 'want_to_focus': 0 } : props.data)
+    console.log(data);
+
     return <Box borderRadius={10} marginBottom={5} background={'white'} width={'380px'}>
         <Box padding={5}>
-            <Input placeholder='Name' border={'0'}
+            <Input placeholder='Name' border={'0'} defaultValue={data['title']}
+                onChange={(value) => {
+                    setData({ ...data, title: value.target.value })
+                }}
                 _active={{
                     'border': '0'
                 }}
@@ -33,7 +46,7 @@ const TaskForm = (props) => {
             <Text mt={2} fontWeight={'bold'}>Act/Est Pomodoros</Text>
             <Flex mt={2}>
                 {/* To be done */}
-                <NumberInput min={0} value={0} isDisabled={true} >
+                <NumberInput min={0} defaultValue={0} isDisabled={true}  >
                     <NumberInputField width={'100px'}></NumberInputField>
                     <NumberInputStepper>
                         <NumberIncrementStepper />
@@ -41,7 +54,10 @@ const TaskForm = (props) => {
                     </NumberInputStepper>
                 </NumberInput>
                 {/* to focus */}
-                <NumberInput min={0} ml={2} value={props.want_to_focus}>
+                <NumberInput min={0} ml={2} value={data.want_to_focus} v onChange={(valueString) => {
+                    console.log(parseInt(valueString))
+                    setData({ ...data, want_to_focus: parseInt(valueString) })
+                }}>
                     <NumberInputField width={'100px'}></NumberInputField>
                     <NumberInputStepper>
                         <NumberIncrementStepper />
@@ -60,7 +76,7 @@ const TaskForm = (props) => {
         </Box>
         <Flex background={'#e8e8e8'} padding={5} borderBottomRadius={5} alignItems={'center'}>
             {props.create ? <></> :
-                <Link>Delete</Link>
+                <Link onClick={() => { props.onDelete() }}>Delete</Link>
             }
 
             <Flex marginLeft={'auto'}>
@@ -74,33 +90,45 @@ const TaskForm = (props) => {
 const TaskItem = (props) => {
     console.log(props);
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const deleteTask = useDeleteTaskMutation()
     if (!settingsOpen)
-        return <Box onClick={props.onClick} padding={5} borderRadius={10} marginBottom={5} background={'white'} width={'380px'} borderLeft={props.selected && '5px solid black '}
+        return <Box onClick={(event) => { event.preventDefault(); props.onClick() }} padding={5} borderRadius={10} marginBottom={5} background={'white'} width={'380px'} borderLeft={props.selected && '5px solid black '}
             borderLeftRadius={props.selected && 0}
         >
             <Flex justifyContent={'center'} alignItems={'center'} width={'380xp'}>
                 <CheckCircleIcon color={'silver'} fontSize={28} ></CheckCircleIcon>
                 <Text fontSize={18} fontWeight={'bold'} flexBasis={'70%'} ml={2}>{props.title}</Text>
                 <Text color={'gray'} fontWeight={'semi-bold'}>0/{props.want_to_focus}</Text>
-                <IconButton ml={2} p={0}><Icon as={FiMoreVertical} fontSize={25} onClick={() => { setSettingsOpen(true) }}></Icon></IconButton>
+                <IconButton ml={2} p={0} onClick={(event) => { event.stopPropagation(); setSettingsOpen(true) }} ><Icon as={FiMoreVertical} fontSize={25} ></Icon></IconButton>
             </Flex>
             <Text backgroundColor={'wheat'} padding={2} mt={2} borderRadius={3}>{props.description}</Text>
         </Box>
     else
-        return <TaskForm></TaskForm>
+        return <TaskForm onCancel={() => {
+            setSettingsOpen(false)
+        }}
+            onSave={() => {
+                setSettingsOpen(false)
+            }}
+            onDelete={() => {
+                deleteTask[0]({ task: props.id })
+            }}
+
+            data={{ title: props.title, want_to_focus: props.want_to_focus, description: props.description, id: props.id }}></TaskForm>
 }
 
 const TaskStats = () => {
-    return <Box width={'100%'} color={'white'} border={'1px solid white'} borderRadius={'2px'}>
-        <Flex justifyContent={'space-between'} w={'100%'}>
-            <VStack width={'50%'}>
-                <Text>Completion On</Text>
-                <Text>7:06(12.05hrs)</Text>
-            </VStack>
-            <VStack w={'50%'}>
-                <Text>Pomo Done</Text>
-                <Text>11/18</Text>
-            </VStack>
+    return <Box width={'100%'} color={'white'}  border={'1px solid white'}background={'#e7d5d52e'} borderTop={'5px solid white'} borderRadius={'2px'} mt={30}>
+        <Flex justifyContent={'space-between'} w={'100%'} p={'10px 20px'}>
+            <HStack w={'50%'}>
+                <Text fontWeight={200} color={'silver'}>Pomo: </Text>
+                <Text fontWeight={600} fontSize={'20px'}>11/18</Text>
+            </HStack>
+            <HStack width={'50%'}>
+                <Text fontWeight={200} color={'silver'}>Finish At:</Text>
+                <Text fontWeight={600} fontSize={'20px'}>7:06(12.05hrs)</Text>
+            </HStack>
+
         </Flex>
     </Box>
 }
@@ -137,11 +165,12 @@ const Task = () => {
                                 onCancel={() => { setAddTask(false) }}
                                 create={true}
                                 onSave={() => {
+                                    setAddTask(false)
                                     // api call to save for new task
                                 }}></TaskForm>
                         </Center>
                         :
-                        <Text textAlign={'center'} border={'3px dotted white'} background={'transparent'} width={'380px'} color={'white'} p={'7px'} onClick={() => { console.log('Adding Waiting please'); setAddTask(true) }} >Add New Task</Text>}
+                        <Text textAlign={'center'} border={'3px dashed #E4D5D5'} background={'#00000017'} width={'380px'} color={'#E4D5D5'} p={'10px'} onClick={() => { console.log('Adding Waiting please'); setAddTask(true) }} >Add Task</Text>}
                     {/*  */}
                     <TaskStats></TaskStats>
                 </VStack>

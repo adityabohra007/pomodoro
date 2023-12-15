@@ -20,6 +20,30 @@ export const taskApi = createApi({
     }),
     tagTypes: ['taskSelected', 'taskList'],
     endpoints: (builder) => ({
+        createTask: builder.mutation({
+            query: (body) => ({
+                url: 'create',
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ['taskList']
+        }),
+        deleteTask: builder.mutation({
+            query: (body) => ({
+                url: '',
+                method: 'DELETE',
+                body
+            }),
+            invalidatesTags: ['taskList']
+        }),
+        updateTask: builder.mutation({
+            query: (body) => ({
+                url: '',
+                method: 'PUT',
+                body
+            }),
+            invalidatesTags: ['taskList']
+        }),
         fetchTask: builder.query({
             query: () => ({ url: 'list' }),
             providesTags: ['taskList']
@@ -48,4 +72,4 @@ export const taskApi = createApi({
         // createTask
     })
 })
-export const { useFetchTaskQuery, useTaskSelectedQuery, useTaskSelectMutation } = taskApi;
+export const { useFetchTaskQuery, useTaskSelectedQuery, useTaskSelectMutation, useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } = taskApi;

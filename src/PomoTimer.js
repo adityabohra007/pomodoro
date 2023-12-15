@@ -27,8 +27,9 @@ const PomoTimer = (props) => {
     const resumeApi = useResumeTimerMutation()
     const completedApi = useCompleteTimerMutation()
     // Triggers
+    console.log(props.task_selected);
     const onStart = () => {
-        trigger({ 'start_time': new Date().toString(), 'task': 13 })
+        trigger({ 'start_time': new Date().toString(), 'task': props.task_selected?.task.id })
     }
 
     const onPause = () => {
@@ -110,7 +111,7 @@ const PomoTimer = (props) => {
     }
     const instance = () => {
         if (is_running === 'inactive')
-            return <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => {
+            return <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid #ebebeb' }} onClick={() => {
                 // setTimer(moment(new Date()).add(1500, 'seconds'))
                 // startTimer()
                 setIsRunning('running')
@@ -140,8 +141,8 @@ const PomoTimer = (props) => {
 
 
     return (
-        <Box padding={'25px 50px'} backgroundColor={'transparent'} borderRadius={10} mt={1}>
-            <Text fontSize={'9xl'} color={'white'}>{time_count ? secondsToMinSecPadded(time_count) : timeConfig}</Text>
+        <Box padding={'5px 30px'} backgroundColor={'transparent'} borderRadius={10} mt={1}>
+            <Text fontSize={'100px'}   textAlign={'center'} color={'white'}>{time_count ? secondsToMinSecPadded(time_count) : timeConfig}</Text>
             <Center>{
                 instance()
             }

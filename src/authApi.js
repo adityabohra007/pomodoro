@@ -7,11 +7,10 @@ export const customFetchBaseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:8081/dj-rest-auth/',
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.token
-        // console.log('tttttt', token);
-        // console.log(token, 'token');;
         if (token) {
-            headers.set('x-csrf',getCookie('csrftoken'))
-            // headers.set('Authorization', `Bearer ${token}`)
+            console.log('token',token)
+            // headers.set('x-csrf',getCookie('csrftoken'))
+            headers.set('Authorization', `Bearer ${token}`)
             headers.set('Content-Type', 'application/json')
             // console.log(headers, 'insider ');
         }

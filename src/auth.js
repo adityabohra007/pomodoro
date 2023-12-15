@@ -1,5 +1,5 @@
 import { Box, Button, Center, Divider, FormControl, FormLabel, HStack, Icon, Input, Link, Stack, Text, VStack } from "@chakra-ui/react"
-import { useGoogleMutation, useLoginMutation, useUserQuery } from "./authApi"
+import { useGoogleMutation, useLazyUserQuery, useLoginMutation, useUserQuery } from "./authApi"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { addToken } from "./authSlice"
@@ -47,12 +47,12 @@ const Login = () => {
                     <Box mt={2} >
                         <GoogleLogin size={"large"} width={"300px"}
                             onSuccess={credentialResponse => {
-                                console.log(credentialResponse, '######################');
+                                // console.log(credentialResponse, '######################');
                                 google[0]({ 'id_token': credentialResponse.credential, 'access_token': credentialResponse.credential })
 
                             }}
                             onError={(e) => {
-                                console.log('Login Failed', e);
+                                // console.log('Login Failed', e);
                             }}
                         />
 
@@ -96,8 +96,9 @@ export const AuthChecker = (props) => {
     // than redirect to login page
     const auth = useSelector(state => state.auth)
     const dispatch = useDispatch()
-    const user = useUserQuery();
+    const user = useLazyUserQuery();
     const [loading, setLoading] = useState(true);
+
     // 
     // 
     // useEffect
@@ -105,29 +106,44 @@ export const AuthChecker = (props) => {
         var token = getCookie('token');
         setTimeout(() => {
             if (token) {
-                console.log('loading token to dispatch from cookie');
+                // console.log('loading token to dispatch from cookie');
                 dispatch(addToken(token));
-                setLoading(false);
-                console.log('loading falsed');
+                // console.log('loading falsed',token);
             }
+            // even if token is not valid stop loading and redirect to login
+            setLoading(false);
+
         }, 2000)
 
     }, [])
     useEffect(() => {
+        // console.log('auth.token', auth);
+        if (auth.token) {
+            // console.log('auth.token');
+            user[0]()
+        }
+    }, [auth])
+
+    useEffect(() => {
         if (user.isError) {
-            console.log('deleting token')
+            // console.log('deleting token')
             deleteCookie('token')
         }
     }, [user.isError])
     if (loading) return <Text>Loading1</Text>
-    if (auth.token) {
-        console.log('auth.token is available')
-        if (user.isSuccess) {
-            return props.children
-        }
+    if (user[1].isUninitialized || user[1].isError) {
+        return <Login></Login>
     }
-    return <Login></Login>
+    else {
+        return props.children
+    }
+    //     console.log('auth.token is available')
+    //     if (user.isSuccess) {
+    //         return props.children
+    //     }
 }
+// return <Login></Login>
+// }
 
 const BasicUsage = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()

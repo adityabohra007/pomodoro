@@ -1,6 +1,6 @@
 
 export const setCookie = (name, value) => {
-    document.cookie = `${name}=${value}+; Path=/`
+    document.cookie = `${name}=${value}; Path=/`
 }
 export const getCookie = (name) => {
     var co = document.cookie.split('; ')
