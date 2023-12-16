@@ -4,15 +4,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { addToken } from "./authSlice"
 import { GoogleLogin } from '@react-oauth/google';
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-} from '@chakra-ui/react'
+
 import { AiFillBuild } from "react-icons/ai";
 import { useDisclosure } from '@chakra-ui/react'
 import { deleteCookie, getCookie, setCookie } from "./cookies"
@@ -145,32 +137,5 @@ export const AuthChecker = (props) => {
 // return <Login></Login>
 // }
 
-const BasicUsage = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    return (
-        <>
-            <Button onClick={onOpen}>Open Modal</Button>
-            <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        {/* <Lorem count={2} /> */}
-                        <Text>G</Text>
-                        <Login></Login>
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
-                            Close
-                        </Button>
-                        <Button variant='ghost'>Secondary Action</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </>
-    )
-}
 
 export default Login;

@@ -18,10 +18,20 @@ export const configApi = createApi({
         },
         credentials: 'include'
     }),
+    tagTypes: ['config'],
     endpoints: (builder) => ({
         getConfig: builder.query({
-            query: () => ({ url: '' })
+            query: () => ({ url: '' }),
+            providesTags: ['config'],
         }),
+        updateConfig: builder.mutation({
+            query: (body) => ({
+                url: 'update/',
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ['config']
+        })
     })
 })
-export const { useGetConfigQuery } = configApi;
+export const { useGetConfigQuery, useUpdateConfigMutation } = configApi;

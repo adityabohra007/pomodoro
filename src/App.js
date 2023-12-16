@@ -17,6 +17,19 @@ import { removeToken } from './authSlice';
 import BreakTimer from './BreakTimer';
 import PomoTimer from './PomoTimer';
 import { useTaskSelectedQuery } from './taskApi';
+import { FaRegUserCircle } from "react-icons/fa";
+import { BsGraphUp } from "react-icons/bs";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+} from '@chakra-ui/react'
+import Configuration from './Configuration';
 
 // web-push add 
 function App() {
@@ -98,22 +111,41 @@ const Main = () => {
   if (status.isFetching || status.isLoading || selected.isLoading)
     return <h1>Loading status</h1>
   return <Box backgroundColor={colorFinder()} overflow={'hidden'} height={'auto'}>
-    <HStack>
-      <Text color={'white'} fontWeight={'600'} fontSize={'22px'}>Pomodoro</Text>
-      <Link onClick={() => {
-        dispatch(removeToken())
-        logout[0]()
-      }}>Logout</Link>
-    </HStack>
+    <Center>
+      <HStack borderBottom={'2px solid white'} width={'500px'}>
+        <Text color={'white'} fontWeight={'600'} fontSize={'22px'} margin={'20px 0px'}>Pomodoro</Text>
+        <Link background={'#696969b0'} p={2} borderRadius={5} display={'flex'} justifyContent={'center'} marginLeft={'auto'}>
+          <BsGraphUp color='white' />
+          <Text ml={2} color={'white'} fontSize={12} >Report</Text>
+        </Link>
+        <Configuration></Configuration>
+
+
+        <Menu>
+          <MenuButton background={'#696969b0'} borderRadius={5} p={2} >
+            <FaRegUserCircle color='white' />
+          </MenuButton>
+          <MenuList>
+            <MenuItem>Download</MenuItem>
+            <MenuItem>Create a Copy</MenuItem>
+            <MenuItem onClick={() => {
+              dispatch(removeToken())
+              logout[0]()
+            }}>Logout</MenuItem>
+            <MenuItem>Delete</MenuItem>
+            <MenuItem>Attend a Workshop</MenuItem>
+          </MenuList>
+        </Menu>
+      </HStack>
+    </Center>
+
     <Center >
       <Box height={'100vh'}>
         <Box borderRadius={10} background={'#e7d5d52e'} mt={10} p={'12px 2px'}>
           <HStack justifyContent={'center'} mt={5} >
-            <Button _hover={{
-              background: '#FF8F8F'
-            }} background={activeTimer === 'timer' && '#FF8F8F'} opacity={1} borderRadius={3} color={'white'} fontSize={activeTimer === 'timer' && '18px'} onClick={() => setActiveTimer('timer')} p={'1px 5px'} variant={'ghost'} >Pomodoro</Button>
-            <Button background={activeTimer === 'Short' && 'blue'} borderRadius={3} color={'white'} fontSize={activeTimer === 'Short' && '18px'} onClick={() => setActiveTimer('SHORT')} p={'1px 5px'}>Short Break</Button>
-            <Button background={activeTimer === 'Long' && 'green'} borderRadius={3} color={'white'} fontSize={activeTimer === 'Long' && '18px'} onClick={() => setActiveTimer('LONG')} p={'1px 5px'}>Long Break</Button>
+            <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'timer' && '#e7d5d52e'} opacity={1} borderRadius={3} color={'white'} fontSize={activeTimer === 'timer' && '18px'} onClick={() => setActiveTimer('timer')} p={'1px 5px'}  >Pomodoro</Button>
+            <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'SHORT' && '#e7d5d52e'} borderRadius={3} color={'white'} fontSize={activeTimer === 'SHORT' && '18px'} onClick={() => setActiveTimer('SHORT')} p={'1px 5px'}>Short Break</Button>
+            <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'LONG' && '#e7d5d52e'} borderRadius={3} color={'white'} fontSize={activeTimer === 'LONG' && '18px'} onClick={() => setActiveTimer('LONG')} p={'1px 5px'}>Long Break</Button>
 
           </HStack>
           {timer_resolver()}
