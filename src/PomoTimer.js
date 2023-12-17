@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import moment from 'moment';
-import { useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./timerApi";
+import { timerApi, useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./timerApi";
 import { Box, Center, Flex, Icon } from '@chakra-ui/react'
+import { taskApi } from "./taskApi";
 import { Text } from '@chakra-ui/react'
 import { MdSkipNext } from "react-icons/md";
 import { useGetConfigQuery } from "./configApi";
 import { secondsToMinSecPadded } from "./Timer";
+import { useDispatch } from "react-redux";
 
 const PomoTimer = (props) => {
     // props.is_paused
@@ -21,15 +23,16 @@ const PomoTimer = (props) => {
     console.log(config, config.isSuccess && config.data.data['pomo_time'], 'config in pomo');
     const timeConfig = config.isSuccess ? JSON.stringify(config.data.data['pomo_time']) + ':00' : ""
     const [timer, setTimer] = useState()
+    const dispatch = useDispatch()
     // Mutation
     const [trigger, data] = useStartTimerMutation() // put it on top of hierarcy to pass the trigger down
     const pausingApi = usePauseTimerMutation()
     const resumeApi = useResumeTimerMutation()
     const completedApi = useCompleteTimerMutation()
     // Triggers
-    console.log(props.task_selected);
+    console.log(props.task_selected, 'pomo-timer');
     const onStart = () => {
-        trigger({ 'start_time': new Date().toString(), 'task': props.task_selected?.task.id })
+        trigger({ 'start_time': new Date().toString(), 'task': props.task_selected?.selected.task.id })
     }
 
     const onPause = () => {
@@ -63,6 +66,7 @@ const PomoTimer = (props) => {
         intervalRef.current = setInterval(() => {
             if (end_time - new Date() <= 0) {
                 console.log('time is up')
+                dispatch(taskApi.util.invalidateTags(['tasktimer']))//to update tasktimer 
                 clearInterval(intervalRef.current);//Stop interval
                 setTimeCount(0)// Reset Count
                 setIsRunning('inactive')//Now reseting state to in_active
@@ -142,7 +146,7 @@ const PomoTimer = (props) => {
 
     return (
         <Box padding={'5px 30px'} backgroundColor={'transparent'} borderRadius={10} mt={1}>
-            <Text fontSize={'100px'}   textAlign={'center'} color={'white'}>{time_count ? secondsToMinSecPadded(time_count) : timeConfig}</Text>
+            <Text fontSize={'100px'} textAlign={'center'} color={'white'}>{time_count ? secondsToMinSecPadded(time_count) : timeConfig}</Text>
             <Center>{
                 instance()
             }

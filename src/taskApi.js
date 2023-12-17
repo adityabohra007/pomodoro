@@ -18,7 +18,7 @@ export const taskApi = createApi({
         },
         credentials: 'include'
     }),
-    tagTypes: ['taskSelected', 'taskList'],
+    tagTypes: ['taskSelected', 'taskList', 'tasktimer'],
     endpoints: (builder) => ({
         createTask: builder.mutation({
             query: (body) => ({
@@ -61,6 +61,14 @@ export const taskApi = createApi({
             }),
             invalidatesTags: ['taskSelected']
         }),
+        taskCheckOff: builder.mutation({
+            query: (body) => ({
+                url: 'checkoff',
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ['taskList']
+        }),
         taskAdd: builder.mutation({
             query: (body) => ({
                 url: 'create',
@@ -68,8 +76,23 @@ export const taskApi = createApi({
                 body: body,
             }),
             invalidatesTags: ['taskList']
+        }),
+        tasktimer: builder.query({
+            query: (body) => ({
+                url: 'timer',
+            }),
+            providesTags: ['tasktimer']
         })
         // createTask
     })
 })
-export const { useFetchTaskQuery, useTaskSelectedQuery, useTaskSelectMutation, useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } = taskApi;
+export const {
+    useFetchTaskQuery,
+    useTaskSelectedQuery,
+    useTaskSelectMutation,
+    useCreateTaskMutation,
+    useDeleteTaskMutation,
+    useUpdateTaskMutation,
+    useTaskCheckOffMutation,
+    useTasktimerQuery
+} = taskApi;

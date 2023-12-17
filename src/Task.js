@@ -1,5 +1,5 @@
 import { Button, Center, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Radio, RadioGroup, Text, Textarea, Tr, VStack } from '@chakra-ui/react';
-import { useCreateTaskMutation, useDeleteTaskMutation, useFetchTaskQuery, useTaskSelectMutation, useTaskSelectedQuery, useUpdateTaskMutation } from './taskApi'
+import { useCreateTaskMutation, useDeleteTaskMutation, useFetchTaskQuery, useTaskCheckOffMutation, useTaskSelectMutation, useTaskSelectedQuery, useTasktimerQuery, useUpdateTaskMutation } from './taskApi'
 import { Box } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import { MdSettings } from 'react-icons/md'
@@ -91,17 +91,18 @@ const TaskItem = (props) => {
     console.log(props);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const deleteTask = useDeleteTaskMutation()
+    const check_off = useTaskCheckOffMutation()
     if (!settingsOpen)
-        return <Box onClick={(event) => { event.preventDefault(); props.onClick() }} padding={5} borderRadius={10} marginBottom={5} background={'white'} width={'380px'} borderLeft={props.selected && '5px solid black '}
-            borderLeftRadius={props.selected && 0}
+        return <Box onClick={(event) => { event.preventDefault(); props.onClick() }} padding={3} borderRadius={10} marginBottom={5} background={'white'} width={'380px'} borderLeft={props.selected && `8px solid black`}
+            borderLeftRadius={5}
         >
             <Flex justifyContent={'center'} alignItems={'center'} width={'380xp'}>
-                <CheckCircleIcon color={'silver'} fontSize={28} ></CheckCircleIcon>
-                <Text fontSize={18} fontWeight={'bold'} flexBasis={'70%'} ml={2}>{props.title}</Text>
-                <Text color={'gray'} fontWeight={'semi-bold'}>0/{props.want_to_focus}</Text>
+                <Button borderRadius={'50%'} width={10} onClick={(event) => { event.stopPropagation(); check_off[0]({ id: props.id, check_off: !props.check_off }) }} ><CheckCircleIcon color={props.check_off ? 'red.500' : 'silver'} fontSize={28} ></CheckCircleIcon></Button>
+                <Text fontSize={18} fontWeight={'bold'} flexBasis={'70%'} ml={2} textDecoration={props.check_off ? 'line-through' : 'none'} color={props.check_off && 'gray.300'}>{props.title}</Text>
+                <Text color={'gray'} fontWeight={'semi-bold'}>{props.completed}/{props.want_to_focus}</Text>
                 <IconButton ml={2} p={0} onClick={(event) => { event.stopPropagation(); setSettingsOpen(true) }} ><Icon as={FiMoreVertical} fontSize={25} ></Icon></IconButton>
             </Flex>
-            <Text backgroundColor={'wheat'} padding={2} mt={2} borderRadius={3}>{props.description}</Text>
+            <Text display={!props.description && 'none'} backgroundColor={'wheat'} padding={2} mt={2} borderRadius={3}>{props.description}</Text>
         </Box>
     else
         return <TaskForm onCancel={() => {
@@ -117,12 +118,21 @@ const TaskItem = (props) => {
             data={{ title: props.title, want_to_focus: props.want_to_focus, description: props.description, id: props.id }}></TaskForm>
 }
 
-const TaskStats = () => {
-    return <Box width={'100%'} color={'white'}  border={'1px solid white'}background={'#e7d5d52e'} borderTop={'5px solid white'} borderRadius={'2px'} mt={30}>
+const TaskStats = (props) => {
+    // console.log(props.task.data.length());
+    console.log(props.task, 'taskstats',props.tasktimer)
+    const timerToday = 0;
+    const task_completed = 0;
+    let total_tasks = 0;
+    props.task.forEach((item) => { total_tasks += item.want_to_focus })
+
+    const time_will_take_to_completed = 0;
+    const will_be_completed_by = 0
+    return <Box width={'100%'} color={'white'} border={'1px solid white'} background={'#e7d5d52e'} borderTop={'5px solid white'} borderRadius={'2px'} mt={30}>
         <Flex justifyContent={'space-between'} w={'100%'} p={'10px 20px'}>
             <HStack w={'50%'}>
                 <Text fontWeight={200} color={'silver'}>Pomo: </Text>
-                <Text fontWeight={600} fontSize={'20px'}>11/18</Text>
+                <Text fontWeight={600} fontSize={'20px'}>{props.tasktimer.length}/{total_tasks}</Text>
             </HStack>
             <HStack width={'50%'}>
                 <Text fontWeight={200} color={'silver'}>Finish At:</Text>
@@ -136,10 +146,11 @@ const TaskStats = () => {
 const Task = () => {
     const { isLoading, isSuccess, error, data, isError, isFetching } = useFetchTaskQuery()
     const taskSelected = useTaskSelectedQuery()
+    const tasktimer = useTasktimerQuery()
     const taskSelect = useTaskSelectMutation()
     const [addTask, setAddTask] = useState(false);
     // console.log(taskSelected.data.selected);
-
+    console.log(tasktimer[1])
     useEffect(() => {
         // if (taskSelected.isSuccess) { setValue(taskSelected.data.selected.task.id); }
     }, [taskSelected.isSuccess])
@@ -151,7 +162,7 @@ const Task = () => {
             <Box marginTop={10} >
                 <VStack>
                     {isSuccess && data.map(item =>
-                        <TaskItem onClick={() => {
+                        <TaskItem completed={tasktimer.isSuccess && tasktimer.data.filter(inner => inner.task.id === item.id).length} onClick={() => {
                             taskSelect[0]({ 'task': item.id })
                             // check if any timer is running than give warning
 
@@ -172,7 +183,7 @@ const Task = () => {
                         :
                         <Text textAlign={'center'} border={'3px dashed #E4D5D5'} background={'#00000017'} width={'380px'} color={'#E4D5D5'} p={'10px'} onClick={() => { console.log('Adding Waiting please'); setAddTask(true) }} >Add Task</Text>}
                     {/*  */}
-                    <TaskStats></TaskStats>
+                    <TaskStats task={data}  tasktimer={tasktimer.data}></TaskStats>
                 </VStack>
             </Box>
         </>
