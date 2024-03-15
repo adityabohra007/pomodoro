@@ -69,6 +69,14 @@ export const taskApi = createApi({
             }),
             invalidatesTags: ['taskList']
         }),
+        taskCheckOffReset: builder.mutation({
+            query: (body) => ({
+                url: 'checkoff/reset',
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ['taskList']
+        }),
         taskAdd: builder.mutation({
             query: (body) => ({
                 url: 'create',
@@ -94,5 +102,6 @@ export const {
     useDeleteTaskMutation,
     useUpdateTaskMutation,
     useTaskCheckOffMutation,
-    useTasktimerQuery
+    useTasktimerQuery,
+    useTaskCheckOffResetMutation
 } = taskApi;

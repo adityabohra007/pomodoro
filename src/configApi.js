@@ -9,7 +9,7 @@ export const configApi = createApi({
             console.log(token)
             if (token) {
                 console.log('Status token adding')
-                // headers.set('Authorization', `Bearer ${token}`)
+                headers.set('Authorization', `Bearer ${token}`)
                 headers.set('Content-Type', 'application/json')
                 // console.log(headers, 'insider ');
             }

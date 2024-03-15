@@ -1,18 +1,20 @@
 import { Box, Button, Center, Divider, FormControl, FormLabel, HStack, Icon, Input, Link, Stack, Text, VStack } from "@chakra-ui/react"
-import { useGoogleMutation, useLazyUserQuery, useLoginMutation, useUserQuery } from "./authApi"
+import { useGoogleMutation, useLazyUserQuery, useLoginMutation } from "./authApi"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { addToken } from "./authSlice"
+import { addToken, removeToken } from "./authSlice"
 import { GoogleLogin } from '@react-oauth/google';
 
 import { AiFillBuild } from "react-icons/ai";
-import { useDisclosure } from '@chakra-ui/react'
 import { deleteCookie, getCookie, setCookie } from "./cookies"
+import { Navigate, redirect } from "react-router-dom"
+// import {} from 'react-router';
 const Login = () => {
     const login = useLoginMutation()
     const [formData, setFormData] = useState({ 'email': '', 'password': '', 'isSubmitted': false })
     const authDispatch = useDispatch()
     const google = useGoogleMutation();
+    const auth = useSelector(state => state.auth)
 
     useEffect(() => {
         if (google[1].isSuccess) { authDispatch(addToken(google[1].data.access)); setCookie('token', google[1].data.access) }
@@ -22,9 +24,18 @@ const Login = () => {
         if (login[1].isSuccess) {
             authDispatch(addToken(login[1].data.access));
             setCookie('token', login[1].data.access);
-        }
-    }, [login[1].isSuccess])
 
+        }
+        if (login[1].isError) {
+            console.log('deleting cookie');
+            deleteCookie('token')
+            authDispatch(removeToken())
+        }
+    }, [login[1]])
+
+    if (auth.token) {
+       return <Navigate to={'/'} />
+    }
     return <Box bg={'#ad4444'} minHeight={'100vh'} paddingTop={'100px'} >
         <Center>
 
@@ -117,14 +128,21 @@ export const AuthChecker = (props) => {
     }, [auth])
 
     useEffect(() => {
-        if (user.isError) {
-            // console.log('deleting token')
+        console.log('delete it');
+        if (user[1].isError) {
+
+            console.log('deleting token')
             deleteCookie('token')
+            dispatch(removeToken)
         }
-    }, [user.isError])
+    }, [user[1].isError])
     if (loading) return <Text>Loading1</Text>
     if (user[1].isUninitialized || user[1].isError) {
-        return <Login></Login>
+        console.log('brooo');
+        // return redirect('/login')
+        return <Navigate to={'/login'}></Navigate>
+        // return<h4>Loading</h4>
+        // return <Login></Login>
     }
     else {
         return props.children

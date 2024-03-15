@@ -6,6 +6,7 @@ import { Text } from '@chakra-ui/react'
 import { MdSkipNext } from "react-icons/md";
 import { useGetConfigQuery } from "./configApi";
 import { secondsToMinSecPadded } from "./Timer";
+import { ActionButton } from "./TimerUtils";
 
 // 
 const BreakTimer = (props) => {
@@ -19,13 +20,13 @@ const BreakTimer = (props) => {
     // Setup
     const break_time = () => {
         if (config.isSuccess) {
-            // console.log('break timer success',props.break_type);
+            console.log('break timer success',props.break_type);
             if (props.break_type === 'LONG') {
-                // console.log('LONG');
+                console.log('LONG');
                 return JSON.stringify(config.data.data['long_break_time']) + ":00"
             }
             if (props.break_type === 'SHORT') {
-                // console.log('SHORT');
+                console.log('SHORT');
                 return JSON.stringify(config.data.data['short_break_time']) + ":00"
             }
         }
@@ -55,7 +56,7 @@ const BreakTimer = (props) => {
 
     // Isolated Functions
     var startTimer = (end_time) => {
-        console.log(timer,'starting timer ');
+        console.log(timer, 'starting timer ');
         setIsRunning('running')// for indication that timer is running
         clearInterval(intervalRef.current);//remove any past timer
         intervalRef.current = setInterval(() => {
@@ -101,20 +102,20 @@ const BreakTimer = (props) => {
     }
     const instance = () => {
         if (is_running === 'inactive')
-            return <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => {
-                // setTimer(moment(new Date()).add(1500, 'seconds'))
-                // startTimer()
+            return <ActionButton onClick={() => {
                 setIsRunning('running')
                 onStart()
                 console.log('Starting')
-            }}>Start</button>;
+            }} name={'Start'} />
+
         if (is_running === 'running')
             return <>
-                <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => {
+                <ActionButton onClick={() => {
                     pauseTimer()
                     setIsRunning('paused')
                     console.log('pausing')
-                }}>Pause</button>
+                }} name={'Pause'} />
+
                 <Flex p={'10px'} background={'gray'} onClick={() => { }}>
                     <Icon as={MdSkipNext} width={10} color={'white'} fontSize={'35px'} zIndex={100}   ></Icon>
                 </Flex>
@@ -124,8 +125,8 @@ const BreakTimer = (props) => {
 
 
     return (
-        <Box padding={'25px 50px'} backgroundColor={'transparent'} borderRadius={10} mt={1}>
-            <Text fontSize={'9xl'} color={'white'}>{time_count ? secondsToMinSecPadded(time_count) : timeConfig}</Text>
+        <Box padding={'5px 30px'} backgroundColor={'transparent'} borderRadius={10} mt={1}>
+            <Text fontSize={'100px'} textAlign={'center'} color={'white'}>{time_count ? secondsToMinSecPadded(time_count) : timeConfig}</Text>
             <Center>{
                 instance()
             }

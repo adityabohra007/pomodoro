@@ -1,12 +1,28 @@
-import { Button, Center, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Radio, RadioGroup, Text, Textarea, Tr, VStack } from '@chakra-ui/react';
-import { useCreateTaskMutation, useDeleteTaskMutation, useFetchTaskQuery, useTaskCheckOffMutation, useTaskSelectMutation, useTaskSelectedQuery, useTasktimerQuery, useUpdateTaskMutation } from './taskApi'
+import { Button, Center, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Text, Textarea, VStack } from '@chakra-ui/react';
+import { useCreateTaskMutation, useDeleteTaskMutation, useFetchTaskQuery, useTaskCheckOffMutation, useTaskCheckOffResetMutation, useTaskSelectMutation, useTaskSelectedQuery, useTasktimerQuery, useUpdateTaskMutation } from './taskApi'
 import { Box } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons'
-import { MdSettings } from 'react-icons/md'
 import { FiMoreVertical } from "react-icons/fi";
-import { useDrag } from 'react-dnd'
 import { useState, useEffect } from 'react';
 import { Input } from '@chakra-ui/react';
+import {
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+} from '@chakra-ui/react'
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+} from '@chakra-ui/react'
+
+import { useTemplateSaveMutation } from './templateApi';
+import { TemplateSave, TemplateSelect } from './Template';
 const TaskForm = (props) => {
     const creating = useCreateTaskMutation()
     const updating = useUpdateTaskMutation();
@@ -120,19 +136,19 @@ const TaskItem = (props) => {
 
 const TaskStats = (props) => {
     // console.log(props.task.data.length());
-    console.log(props.task, 'taskstats',props.tasktimer)
-    const timerToday = 0;
-    const task_completed = 0;
+    console.log(props.task, 'taskstats', props.tasktimer)
+    // const timerToday = 0;
+    // const task_completed = 0;
     let total_tasks = 0;
     props.task.forEach((item) => { total_tasks += item.want_to_focus })
 
-    const time_will_take_to_completed = 0;
-    const will_be_completed_by = 0
+    // const time_will_take_to_completed = 0;
+    // const will_be_completed_by = 0
     return <Box width={'100%'} color={'white'} border={'1px solid white'} background={'#e7d5d52e'} borderTop={'5px solid white'} borderRadius={'2px'} mt={30}>
         <Flex justifyContent={'space-between'} w={'100%'} p={'10px 20px'}>
             <HStack w={'50%'}>
                 <Text fontWeight={200} color={'silver'}>Pomo: </Text>
-                <Text fontWeight={600} fontSize={'20px'}>{props.tasktimer.length}/{total_tasks}</Text>
+                <Text fontWeight={600} fontSize={'20px'}>{props.tasktimer?.length}/{total_tasks}</Text>
             </HStack>
             <HStack width={'50%'}>
                 <Text fontWeight={200} color={'silver'}>Finish At:</Text>
@@ -143,12 +159,18 @@ const TaskStats = (props) => {
     </Box>
 }
 
+
 const Task = () => {
     const { isLoading, isSuccess, error, data, isError, isFetching } = useFetchTaskQuery()
     const taskSelected = useTaskSelectedQuery()
     const tasktimer = useTasktimerQuery()
     const taskSelect = useTaskSelectMutation()
     const [addTask, setAddTask] = useState(false);
+    const [templateSave, setTemplateSave] = useState(false);
+    const [templateName, setTemplateName] = useState('');
+    const templateSaving = useTemplateSaveMutation();
+    const [templateSelect, setTemplateSelect] = useState(false);
+    const checkoff = useTaskCheckOffResetMutation()
     // console.log(taskSelected.data.selected);
     console.log(tasktimer[1])
     useEffect(() => {
@@ -157,9 +179,38 @@ const Task = () => {
     if (isLoading | taskSelected.isLoading) return <h5>Loading</h5>
     if (taskSelected.isSuccess)
         return <>
+            <TemplateSave open={templateSave} onClose={() => { setTemplateSave(false) }} onSave={(name) => {
+                templateSaving[0]({ 'name': name })
+            }}></TemplateSave>
+            <TemplateSelect open={templateSelect} onClose={() => { }} onSave={() => { }}></TemplateSelect>
+            {/*  */}
+            <HStack justifyContent={'space-between'} alignItems={'center'} mt={5}>
+                <Text color={'white'} fontSize={20} >Tasks</Text>
+                {/* <IconButton ml={2} p={0} onClick={(event) => { event.stopPropagation(); }} > */}
+                {/* <HStack bg={'gray.100'} cursor={'pointer'} p={1} borderRadius={8} justifyContent={'center'}>
+                    <Icon as={FiMoreVertical} fontSize={25} ></Icon>
+                </HStack> */}
+                <Menu>
+                    <MenuButton bg={'gray.600'} p={'7px'} borderRadius={'5px'} _hover={{ background: 'gray.600' }} >
+                        <FiMoreVertical size={20} m={0} color='white' />
+                    </MenuButton>
+                    <MenuList>
 
-
-            <Box marginTop={10} >
+                        <MenuItem onClick={() => {
+                            checkoff[0]()
+                        }}>Clear Task Checked Off</MenuItem>
+                        <MenuItem onClick={() => {
+                            setTemplateSave(true)
+                        }}>Save to Template</MenuItem>
+                        <MenuItem onClick={() => {
+                            setTemplateSelect(true)
+                        }}>Load From Template</MenuItem>
+                    </MenuList>
+                </Menu>
+                {/* </IconButton> */}
+            </HStack>
+            <Box height={'2px'} background={'white'} mt={1}></Box>
+            <Box marginTop={5} >
                 <VStack>
                     {isSuccess && data.map(item =>
                         <TaskItem completed={tasktimer.isSuccess && tasktimer.data.filter(inner => inner.task.id === item.id).length} onClick={() => {
@@ -183,10 +234,16 @@ const Task = () => {
                         :
                         <Text textAlign={'center'} border={'3px dashed #E4D5D5'} background={'#00000017'} width={'380px'} color={'#E4D5D5'} p={'10px'} onClick={() => { console.log('Adding Waiting please'); setAddTask(true) }} >Add Task</Text>}
                     {/*  */}
-                    <TaskStats task={data}  tasktimer={tasktimer.data}></TaskStats>
+                    <TaskStats task={data} tasktimer={tasktimer.data}></TaskStats>
                 </VStack>
             </Box>
         </>
 
 }
 export default Task;
+
+// clear finished tasks
+
+// Template system - save as template,add from template
+
+// Project system

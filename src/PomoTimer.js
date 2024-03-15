@@ -8,6 +8,9 @@ import { MdSkipNext } from "react-icons/md";
 import { useGetConfigQuery } from "./configApi";
 import { secondsToMinSecPadded } from "./Timer";
 import { useDispatch } from "react-redux";
+import { ActionButton } from "./TimerUtils";
+import start from './mouse-click.mp3';
+
 
 const PomoTimer = (props) => {
     // props.is_paused
@@ -20,7 +23,7 @@ const PomoTimer = (props) => {
     // 3. start timer without clicking start
     // we need taskId
     const config = useGetConfigQuery();
-    console.log(config, config.isSuccess && config.data.data['pomo_time'], 'config in pomo');
+    // console.log(config, config.isSuccess && config.data.data['pomo_time'], 'config in pomo');
     const timeConfig = config.isSuccess ? JSON.stringify(config.data.data['pomo_time']) + ':00' : ""
     const [timer, setTimer] = useState()
     const dispatch = useDispatch()
@@ -30,8 +33,10 @@ const PomoTimer = (props) => {
     const resumeApi = useResumeTimerMutation()
     const completedApi = useCompleteTimerMutation()
     // Triggers
-    console.log(props.task_selected, 'pomo-timer');
+    // console.log(props.task_selected, 'pomo-timer');
     const onStart = () => {
+        const audio = new Audio(start)
+        audio.play()
         trigger({ 'start_time': new Date().toString(), 'task': props.task_selected?.selected.task.id })
     }
 
@@ -60,12 +65,12 @@ const PomoTimer = (props) => {
     }
     // Isolated Functions
     var startTimer = (end_time) => {
-        console.log(timer);
+        // console.log(timer);
         setIsRunning('running')
         clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
             if (end_time - new Date() <= 0) {
-                console.log('time is up')
+                // console.log('time is up')
                 dispatch(taskApi.util.invalidateTags(['tasktimer']))//to update tasktimer 
                 clearInterval(intervalRef.current);//Stop interval
                 setTimeCount(0)// Reset Count
@@ -81,14 +86,14 @@ const PomoTimer = (props) => {
     // If api start success than start timer
     useEffect(() => {
         if (data.isSuccess) {
-            console.log(data.data)
+            // console.log(data.data)
             startTimer(moment(data.data.end_time))
         }
     }, [data])
     useEffect(() => {
 
         if (resumeApi[1].isSuccess) {
-            console.log('useeffect');
+            // console.log('useeffect');
             if (resumeApi[1].data) {
                 console.log('resume useeffect')
                 startTimer(moment(resumeApi[1].data.timer.end_time))
@@ -123,21 +128,24 @@ const PomoTimer = (props) => {
                 console.log('Starting')
             }}>Start</button>;
         if (is_running === 'paused')
-            return <><button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => { console.log('resuming'); resumeTime() }}>Resume</button>   <Box>
-                <Flex p={'10px'} background={'gray'} onClick={() => { onCompleted() }}>
-                    <Icon as={MdSkipNext} width={10} color={'white'} fontSize={'35px'} zIndex={100} ></Icon>
-                </Flex>
-            </Box>
+            return <>
+                <ActionButton onClick={() => { resumeTime() }} name={'Resume'}></ActionButton>
+                {/* <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => { console.log('resuming'); }}>Resume</button> */}
+                <Box>
+                    <Flex p={'10px'} background={'gray'} onClick={() => { onCompleted() }}>
+                        <Icon as={MdSkipNext} width={10} color={'white'} fontSize={'35px'} zIndex={100} ></Icon>
+                    </Flex>
+                </Box>
             </>
         if (is_running === 'running')
             return <>
-                <button style={{ background: 'white', minWidth: '200px', padding: '10px 5px', borderBottom: '10px solid silver' }} onClick={() => {
+                <ActionButton onClick={() => {
                     pauseTimer()
                     setIsRunning('paused')
                     console.log('pausing')
-                }}>Pause</button>
+                }} name={'Pause'}></ActionButton>
                 <Flex p={'10px'} background={'gray'} onClick={() => { onCompleted() }}>
-                    <Icon as={MdSkipNext} width={10} color={'white'} fontSize={'35px'} zIndex={100}   ></Icon>
+                    <Icon as={MdSkipNext} width={10} color={'white'} fontSize={'35px'} zIndex={100}></Icon>
                 </Flex>
             </>;
 
