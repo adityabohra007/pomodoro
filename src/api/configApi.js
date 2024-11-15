@@ -27,8 +27,8 @@ export const configApi = createApi({
         }),
         updateConfig: builder.mutation({
             query: (body) => ({
-                url: 'update/',
-                method: 'POST',
+                url: '/',
+                method: 'PUT',
                 body
             }),
             invalidatesTags: ['config']
