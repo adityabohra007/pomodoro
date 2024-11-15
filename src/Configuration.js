@@ -8,7 +8,7 @@ import {
     ModalCloseButton, Button, Text, useDisclosure, Box, Divider, Switch,
 } from '@chakra-ui/react'
 import { MdDone } from "react-icons/md";
-import { Center, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Radio, RadioGroup, Textarea, Tr, VStack } from '@chakra-ui/react';
+import { HStack, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, VStack } from '@chakra-ui/react';
 import { useGetConfigQuery, useUpdateConfigMutation } from './api/configApi';
 import { useEffect, useState } from 'react';
 import { IoSettingsSharp } from "react-icons/io5";

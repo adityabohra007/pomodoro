@@ -212,7 +212,7 @@ const Task = () => {
             <Box height={'2px'} background={'white'} mt={1}></Box>
             <Box marginTop={5} >
                 <VStack>
-                    {isSuccess && data.map(item =>
+                    {isSuccess && data?.map(item =>
                         <TaskItem completed={tasktimer.isSuccess && tasktimer.data.filter(inner => inner.task.id === item.id).length} onClick={() => {
                             taskSelect[0]({ 'task': item.id })
                             // check if any timer is running than give warning

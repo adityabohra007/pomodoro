@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 import moment from 'moment';
-import { useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./api/timerApi";
+import { useBreakTimerStartMutation, useBreakTimerStopMutation } from "./api/timerApi";
 import { Box, Center, Flex, Icon } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react'
 import { MdSkipNext } from "react-icons/md";
 import { useGetConfigQuery } from "./api/configApi";
-import { secondsToMinSecPadded } from "./Timer";
-import { ActionButton } from "./TimerUtils";
+import { secondsToMinSecPadded } from "./Timer/Timer";
+import { ActionButton } from "./Timer/TimerUtils";
 
 // 
 const BreakTimer = (props) => {
@@ -20,7 +20,7 @@ const BreakTimer = (props) => {
     // Setup
     const break_time = () => {
         if (config.isSuccess) {
-            console.log('break timer success',props.break_type);
+            console.log('break timer success', props.break_type);
             if (props.break_type === 'LONG') {
                 console.log('LONG');
                 return JSON.stringify(config.data.data['long_break_time']) + ":00"

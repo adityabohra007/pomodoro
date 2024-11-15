@@ -8,6 +8,8 @@ import "./index.css";
 import Login from "./auth";
 import { AuthChecker } from './auth';
 import Main from "./main";
+import Todo from "./Todo";
+import { TodoDetail } from "./TodoDetail";
 
 const ErrorPage = () => {
     return <div>Error Page</div>
@@ -30,7 +32,28 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
 
     }
-    , {}
+    , {
+        path: '/shortner',
+        element: <AuthChecker>
+            <h4>URL-Shortner</h4>
+        </AuthChecker>
+    },
+    {
+        path: '/todo',
+        element: <AuthChecker>
+            <Todo></Todo>
+        </AuthChecker>
+    },
+    {
+        path: '/todo/:id',
+        element: <AuthChecker>
+            <TodoDetail></TodoDetail>
+        </AuthChecker>
+    },
+    {
+        path: '/todo/add'
+    }
+
 ]);
 export default router
 // ReactDOM.createRoot(document.getElementById("root")).render(

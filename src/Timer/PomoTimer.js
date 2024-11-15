@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react"
 import moment from 'moment';
-import { timerApi, useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./api/timerApi";
+import { timerApi, useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "../api/timerApi";
 import { Box, Center, Flex, Icon } from '@chakra-ui/react'
-import { taskApi } from "./taskApi";
+import { taskApi } from "../taskApi";
 import { Text } from '@chakra-ui/react'
 import { MdSkipNext } from "react-icons/md";
-import { useGetConfigQuery } from "./api/configApi";
+import { useGetConfigQuery } from "../api/configApi";
 import { secondsToMinSecPadded } from "./Timer";
 import { useDispatch } from "react-redux";
 import { ActionButton } from "./TimerUtils";
-import start from './mouse-click.mp3';
+// import start from './mouse-click.mp3';
 
 
 const PomoTimer = (props) => {
@@ -35,9 +35,9 @@ const PomoTimer = (props) => {
     // Triggers
     // console.log(props.task_selected, 'pomo-timer');
     const onStart = () => {
-        const audio = new Audio(start)
-        audio.play()
-        trigger({ 'start_time': new Date().toString(), 'task': props.task_selected?.selected.task.id })
+        // const audio = new Audio(start)
+        // audio.play()
+        // trigger({ 'start_time': new Date().toString(), 'task': props.task_selected?.selected.task.id })
     }
 
     const onPause = () => {

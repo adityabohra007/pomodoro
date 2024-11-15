@@ -2,19 +2,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { invalid } from "moment";
 import { getCookie } from "../cookies";
+import { url } from "./commomns";
 
 export const customFetchBaseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:8081/dj-rest-auth/',
+    baseUrl: url + '/dj-rest-auth/',
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.token
         if (token) {
-            console.log('token',token)
+            console.log('token', token)
             // headers.set('x-csrf',getCookie('csrftoken'))
             headers.set('Authorization', `Bearer ${token}`)
             headers.set('Content-Type', 'application/json')
             // console.log(headers, 'insider ');
         }
-        console.log(headers, 'header ')
+        // console.log(headers, 'header ')
         return headers
     },
     credentials: 'include'

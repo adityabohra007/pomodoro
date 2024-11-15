@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { url } from "./commomns";
 
 export const dashboardApi = createApi({
     reducerPath: 'dashboardApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:8081/pomo/',
+        baseUrl: url + '/pomo/',
         prepareHeaders: (headers, { getState }) => {
             const token = getState().auth.token
             // console.log('tttttt', token);
@@ -13,7 +14,7 @@ export const dashboardApi = createApi({
                 headers.set('Content-Type', 'application/json')
                 // console.log(headers, 'insider ');
             }
-            console.log(headers, 'header ')
+            // console.log(headers, 'header ')
             return headers
         },
         credentials: 'include'

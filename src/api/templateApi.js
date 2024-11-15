@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { url } from "./commomns";
 
 export const templateApi = createApi({
     reducerPath: 'templateApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:8081/pomo/',
+        baseUrl: url + '/pomo/',
         prepareHeaders: (headers, { getState }) => {
             const token = getState().auth.token
             // console.log('tttttt', token);

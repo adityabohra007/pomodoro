@@ -3,7 +3,6 @@ import {
     ModalOverlay,
     ModalContent,
     ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
     Button,
@@ -13,7 +12,7 @@ import {
 import { BsGraphUp } from "react-icons/bs";
 import { useDashboardQuery } from './api/dashboardApi';
 import moment from 'moment';
-import { BarChart, Chart } from './BarChart';
+import { Chart } from './BarChart';
 // Sequence Dashboard,List of Task done
 // function Charts() {
 //     return <BarChart></BarChart>

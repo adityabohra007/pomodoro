@@ -13,7 +13,7 @@ export const taskApi = createApi({
                 headers.set('Content-Type', 'application/json')
                 // console.log(headers, 'insider ');
             }
-            console.log(headers, 'header ')
+            // console.log(headers, 'header ')
             return headers
         },
         credentials: 'include'
@@ -22,7 +22,7 @@ export const taskApi = createApi({
     endpoints: (builder) => ({
         createTask: builder.mutation({
             query: (body) => ({
-                url: 'create',
+                url: '/',
                 method: 'POST',
                 body
             }),
@@ -38,14 +38,14 @@ export const taskApi = createApi({
         }),
         updateTask: builder.mutation({
             query: (body) => ({
-                url: '',
+                url: '/',
                 method: 'PUT',
                 body
             }),
             invalidatesTags: ['taskList']
         }),
         fetchTask: builder.query({
-            query: () => ({ url: 'list' }),
+            query: () => ({ url: '' }),
             providesTags: ['taskList']
         }),
         taskSelected: builder.query({

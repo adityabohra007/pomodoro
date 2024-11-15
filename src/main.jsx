@@ -11,7 +11,7 @@ import { useStatusQuery } from './api/timerApi';
 import { useLogoutMutation } from './api/authApi';
 import { removeToken } from './authSlice';
 import BreakTimer from './BreakTimer';
-import PomoTimer from './PomoTimer';
+import PomoTimer from './Timer/PomoTimer';
 import { useTaskSelectedQuery } from './taskApi';
 import { FaRegUserCircle } from "react-icons/fa";
 import {
@@ -100,9 +100,9 @@ const Main = () => {
             <Box>
                 <Box borderRadius={10} background={'#e7d5d52e'} mt={10} p={'12px 2px'}>
                     <HStack justifyContent={'center'} mt={5} >
-                        <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'timer' && '#e7d5d52e'} opacity={1} borderRadius={3} color={'white'} fontSize={activeTimer === 'timer' && '18px'} onClick={() => setActiveTimer('timer')} p={'1px 5px'}  >Pomodoro</Button>
-                        <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'SHORT' && '#e7d5d52e'} borderRadius={3} color={'white'} fontSize={activeTimer === 'SHORT' && '18px'} onClick={() => setActiveTimer('SHORT')} p={'1px 5px'}>Short Break</Button>
-                        <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'LONG' && '#e7d5d52e'} borderRadius={3} color={'white'} fontSize={activeTimer === 'LONG' && '18px'} onClick={() => setActiveTimer('LONG')} p={'1px 5px'}>Long Break</Button>
+                        <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'timer' && '#e7d5d52e'} opacity={1} borderRadius={3} color={'white'} fontSize={activeTimer === 'timer' ? '14px' : '12px'} onClick={() => setActiveTimer('timer')} p={'2px 12px'}  >Pomodoro</Button>
+                        <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'SHORT' && '#e7d5d52e'} borderRadius={3} color={'white'} fontSize={activeTimer === 'SHORT' ? '14px' : '12px'} onClick={() => setActiveTimer('SHORT')} p={'2px 12px'}>Short Break</Button>
+                        <Button _hover={{ background: '#e7d5d52e' }} background={activeTimer === 'LONG' && '#e7d5d52e'} borderRadius={3} color={'white'} fontSize={activeTimer === 'LONG' ? '14px' : '12px'} onClick={() => setActiveTimer('LONG')} p={'2px 12px'}>Long Break</Button>
 
                     </HStack>
                     {timer_resolver()}

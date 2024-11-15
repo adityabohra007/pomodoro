@@ -34,7 +34,7 @@ const Login = () => {
     }, [login[1]])
 
     if (auth.token) {
-       return <Navigate to={'/'} />
+        return <Navigate to={'/'} />
     }
     return <Box bg={'#ad4444'} minHeight={'100vh'} paddingTop={'100px'} >
         <Center>
@@ -66,7 +66,7 @@ const Login = () => {
                         <Divider></Divider>
                     </Stack>
                     <Box>
-
+                        <h4>Error{JSON.stringify(login[1].error)}</h4>
                         <FormControl >
                             <FormLabel color={'gray'}>Email</FormLabel>
                             <Input placeholder="example@mail.com" width={'300px'} background={'#e8e8e8'} value={formData.email} onChange={(event) => { setFormData({ ...formData, 'email': event.target.value }) }}></Input>
@@ -116,7 +116,7 @@ export const AuthChecker = (props) => {
             // even if token is not valid stop loading and redirect to login
             setLoading(false);
 
-        }, 2000)
+        }, 1000)
 
     }, [])
     useEffect(() => {

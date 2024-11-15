@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { url } from "./commomns";
 
 export const configApi = createApi({
     reducerPath: 'configApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:8081/pomo/configuration',
+        baseUrl:  url +'/pomo/configuration',
         prepareHeaders: (headers, { getState }) => {
             const token = getState().auth.token
             console.log(token)
@@ -13,7 +14,7 @@ export const configApi = createApi({
                 headers.set('Content-Type', 'application/json')
                 // console.log(headers, 'insider ');
             }
-            console.log(headers, 'header ')
+            // console.log(headers, 'header ')
             return headers
         },
         credentials: 'include'

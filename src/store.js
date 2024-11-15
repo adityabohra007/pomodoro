@@ -7,6 +7,7 @@ import { authApi } from './api/authApi'
 import authReducer from './authSlice';
 import { dashboardApi } from './api/dashboardApi'
 import { templateApi } from './api/templateApi'
+import { todoApi } from './api/TodoApi'
 export const store = configureStore({
     reducer: {
         [timerApi.reducerPath]: timerApi.reducer,
@@ -15,6 +16,8 @@ export const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [dashboardApi.reducerPath]: dashboardApi.reducer,
         [templateApi.reducerPath]: templateApi.reducer,
+        [todoApi.reducerPath]: todoApi.reducer,
+
         auth: authReducer
 
     },
@@ -24,6 +27,6 @@ export const store = configureStore({
         configApi.middleware,
         authApi.middleware,
         dashboardApi.middleware,
-        templateApi.middleware)
+        templateApi.middleware, todoApi.middleware)
 })
 setupListeners(store.dispatch)
