@@ -11,7 +11,7 @@ import {
     ModalBody,
     ModalCloseButton,
 } from '@chakra-ui/react'
-import { useTemplateQuery } from './templateApi';
+import { useTemplateQuery } from './api/templateApi';
 export const TemplateSave = ({ open, onClose, onSave }) => {
     const [name, setName] = useState('')
     return <>

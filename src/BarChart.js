@@ -9,7 +9,11 @@ import {
 } from 'chart.js';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { useBarchartQuery } from './dashboardApi';
+import { useBarchartQuery } from './api/dashboardApi';
+import {
+    Button,
+    VStack, ButtonGroup
+} from '@chakra-ui/react'
 
 ChartJS.register(
     CategoryScale,
@@ -19,9 +23,27 @@ ChartJS.register(
     Tooltip,
     Legend
 );
-const BarChart = () => {
+export const Chart = () => {
     const [dataMode, setDataMode] = useState('Week');
-    const barchart = useBarchartQuery('mode=Month');
+
+    return <VStack>
+        <ButtonGroup size='sm' isAttached variant='outline' marginLeft={'auto'}>
+            <Button onClick={() => { setDataMode('Week') }}>Week</Button>
+            <Button onClick={() => { setDataMode('Month') }}>Month</Button>
+            <Button onClick={() => { setDataMode('Year') }}>Year</Button>
+            {/* <IconButton aria-label='Add to friends' icon={<AddIcon />} /> */}
+        </ButtonGroup>
+        <ButtonGroup size='sm' isAttached variant='outline' marginLeft={'auto'}>
+            <Button>{'<'}</Button>
+            <Button>{''}</Button>
+            <Button>{'>'}</Button>
+            {/* <IconButton aria-label='Add to friends' icon={<AddIcon />} /> */}
+        </ButtonGroup>
+        <BarChart mode={dataMode}></BarChart>
+    </VStack>
+}
+const BarChart = (props) => {
+    const barchart = useBarchartQuery('mode=' + props.mode);
 
     if (barchart.isSuccess) {
         const data = {
@@ -43,9 +65,9 @@ const BarChart = () => {
         return <Bar
             options={{
                 // responsive: true,
-                
+
                 scales: {
-                    xAxes: [{barThickness:100}],
+                    xAxes: [{ barThickness: 100 }],
                 },
                 plugins: {
                     legend: {

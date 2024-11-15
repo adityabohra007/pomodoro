@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import moment from 'moment';
-import { useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./timerApi";
+import { useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./api/timerApi";
 import { Box, Center, Flex, Icon } from '@chakra-ui/react'
 import { Text } from '@chakra-ui/react'
 import { MdSkipNext } from "react-icons/md";
-import { useGetConfigQuery } from "./configApi";
+import { useGetConfigQuery } from "./api/configApi";
 import { secondsToMinSecPadded } from "./Timer";
 import { ActionButton } from "./TimerUtils";
 

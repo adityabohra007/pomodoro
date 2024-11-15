@@ -1,12 +1,12 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
-import { timerApi } from './timerApi'
+import { timerApi } from './api/timerApi'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { taskApi } from './taskApi'
-import { configApi } from './configApi'
-import { authApi } from './authApi'
+import { configApi } from './api/configApi'
+import { authApi } from './api/authApi'
 import authReducer from './authSlice';
-import { dashboardApi } from './dashboardApi'
-import { templateApi } from './templateApi'
+import { dashboardApi } from './api/dashboardApi'
+import { templateApi } from './api/templateApi'
 export const store = configureStore({
     reducer: {
         [timerApi.reducerPath]: timerApi.reducer,

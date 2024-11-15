@@ -1,7 +1,7 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { invalid } from "moment";
-import { getCookie } from "./cookies";
+import { getCookie } from "../cookies";
 
 export const customFetchBaseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:8081/dj-rest-auth/',

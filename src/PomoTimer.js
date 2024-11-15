@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react"
 import moment from 'moment';
-import { timerApi, useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./timerApi";
+import { timerApi, useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "./api/timerApi";
 import { Box, Center, Flex, Icon } from '@chakra-ui/react'
 import { taskApi } from "./taskApi";
 import { Text } from '@chakra-ui/react'
 import { MdSkipNext } from "react-icons/md";
-import { useGetConfigQuery } from "./configApi";
+import { useGetConfigQuery } from "./api/configApi";
 import { secondsToMinSecPadded } from "./Timer";
 import { useDispatch } from "react-redux";
 import { ActionButton } from "./TimerUtils";

@@ -6,9 +6,9 @@ import Task from './Task';
 import { useEffect, useState } from 'react';
 import { Box, Button, HStack, Text, } from '@chakra-ui/react'
 import { Center } from '@chakra-ui/react'
-import { useGetConfigQuery } from './configApi';
-import { useStatusQuery } from './timerApi';
-import { useLogoutMutation } from './authApi';
+import { useGetConfigQuery } from './api/configApi';
+import { useStatusQuery } from './api/timerApi';
+import { useLogoutMutation } from './api/authApi';
 import { removeToken } from './authSlice';
 import BreakTimer from './BreakTimer';
 import PomoTimer from './PomoTimer';

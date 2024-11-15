@@ -1,5 +1,5 @@
 import { Box, Button, Center, Divider, FormControl, FormLabel, HStack, Icon, Input, Link, Stack, Text, VStack } from "@chakra-ui/react"
-import { useGoogleMutation, useLazyUserQuery, useLoginMutation } from "./authApi"
+import { useGoogleMutation, useLazyUserQuery, useLoginMutation } from "./api/authApi"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { addToken, removeToken } from "./authSlice"

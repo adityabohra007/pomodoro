@@ -8,19 +8,20 @@ import {
     ModalCloseButton,
     Button,
     useDisclosure,
-    Link, Text, Box, HStack, Tooltip, Stack
+    Link, Text, Box, HStack, Tooltip, Stack, VStack, ButtonGroup
 } from '@chakra-ui/react'
 import { BsGraphUp } from "react-icons/bs";
-import { useDashboardQuery } from './dashboardApi';
+import { useDashboardQuery } from './api/dashboardApi';
 import moment from 'moment';
-import { BarChart } from './BarChart';
+import { BarChart, Chart } from './BarChart';
 // Sequence Dashboard,List of Task done
-function Charts() {
-    return <BarChart></BarChart>
-}
+// function Charts() {
+//     return <BarChart></BarChart>
+// }
 function Dashboard() {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const dashboard = useDashboardQuery()
+    // const graphMode
     console.log(dashboard.data);
     const types = {
         pause: { color: 'gray' },
@@ -130,14 +131,22 @@ function Dashboard() {
                     <Text ml={2} color={'white'} fontSize={12} >Report</Text>
                 </Link>
 
-                <Modal isOpen={isOpen} onClose={onClose} size={'full'}>
+                <Modal isOpen={isOpen} onClose={onClose} size={'xl'} >
                     <ModalOverlay />
                     <ModalContent>
                         <ModalHeader>Dashboard</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
-                            <Stack w={'70%'} m={'auto'}>
-                                <BarChart></BarChart>
+                            <Stack m={'auto'}>
+                                <VStack>
+                                    <ButtonGroup size='sm' isAttached variant='outline'>
+                                        <Button>Summary</Button>
+                                        <Button>Detail</Button>
+                                        <Button>Ranking</Button>
+                                    </ButtonGroup>
+                                </VStack>
+                                <p>Acitvity Summary</p>
+                                <Chart></Chart>
                             </Stack>
                             {/* {dashboard.data} */}
                             {/* <Text fontWeight={800}>{new Date().toDateString()}</Text> */}
@@ -149,12 +158,6 @@ function Dashboard() {
 
                             </Text>
                         </ModalBody>
-                        <ModalFooter>
-                            <Button colorScheme='blue' mr={3} onClick={onClose}>
-                                Close
-                            </Button>
-                            <Button variant='ghost'>Secondary Action</Button>
-                        </ModalFooter>
                     </ModalContent>
                 </Modal>
             </>
