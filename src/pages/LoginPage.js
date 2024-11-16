@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import axios from "axios";
 import { useHistory } from "react-router";
 
 function Login() {

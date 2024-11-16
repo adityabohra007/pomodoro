@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { MdDone } from "react-icons/md";
 import { HStack, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, VStack } from '@chakra-ui/react';
-import { useGetConfigQuery, useUpdateConfigMutation } from './api/configApi';
+import { useGetConfigQuery, useUpdateConfigMutation } from '../api/configApi';
 import { useEffect, useState } from 'react';
 import { IoSettingsSharp } from "react-icons/io5";
 

@@ -8,11 +8,11 @@ import "./index.css";
 import Login from "./auth";
 import { AuthChecker } from './auth';
 import Main from "./main";
-import Todo from "./Todo";
-import { TodoDetail } from "./TodoDetail";
+import Todo from "./components/Todo";
+import { TodoDetail } from "./components/TodoDetail";
 
 const ErrorPage = () => {
-    return <div>Error Page</div>
+    return <div>Error Pag dfgfhne</div>
 }
 const router = createBrowserRouter([
     {

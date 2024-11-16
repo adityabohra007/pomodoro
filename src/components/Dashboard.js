@@ -10,7 +10,7 @@ import {
     Link, Text, Box, HStack, Tooltip, Stack, VStack, ButtonGroup
 } from '@chakra-ui/react'
 import { BsGraphUp } from "react-icons/bs";
-import { useDashboardQuery } from './api/dashboardApi';
+import { useDashboardQuery } from '../api/dashboardApi';
 import moment from 'moment';
 import { Chart } from './BarChart';
 // Sequence Dashboard,List of Task done

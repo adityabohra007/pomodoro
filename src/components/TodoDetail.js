@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux"
 import { Button, Flex, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Stack, Text, Textarea, VStack } from '@chakra-ui/react';
-import { useCreateTaskMutation, useDeleteTaskMutation, useTaskCheckOffMutation, useUpdateTaskMutation } from './taskApi'
+import { useCreateTaskMutation, useDeleteTaskMutation, useTaskCheckOffMutation, useUpdateTaskMutation } from '../api/taskApi'
 import { Box } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import { FiMoreVertical } from "react-icons/fi";
@@ -16,8 +16,8 @@ import {
     ModalBody,
     ModalCloseButton, useDisclosure, FormControl, FormLabel
 } from '@chakra-ui/react'
-import { useTodoListDeleteMutation, useTodoListUpdateMutation } from './api/TodoApi';
-import { useTodoGetQuery } from "./api/TodoApi";
+import { useTodoListDeleteMutation, useTodoListUpdateMutation } from '../api/TodoApi';
+import { useTodoGetQuery } from "../api/TodoApi";
 import { useParams } from "react-router";
 import TaskAdd from "./TaskAdd";
 const TaskForm = (props) => {

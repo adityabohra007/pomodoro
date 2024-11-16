@@ -31,20 +31,7 @@ function App() {
       </GoogleOAuthProvider>
     </Provider>
   </ChakraProvider>
-  // return (
-  //   <ChakraProvider theme={theme}>
-  //     <Provider store={store}>
-  //       {/* <Main></Main> */}
-  //       <GoogleOAuthProvider clientId="798224335861-ho4meomu5j6dpcmr5tk7vfesff2td6pl.apps.googleusercontent.com">
-  //         <AuthChecker>
-  //           <Main></Main>
-  //         </AuthChecker>
-  //       </GoogleOAuthProvider>
 
-  //       {/* <Login></Login> */}
-  //     </Provider>
-  //   </ChakraProvider>
-  // );
 }
 
 // Now convert it to guest and authenticated user

@@ -8,17 +8,12 @@ import {
     ModalCloseButton, Button, useDisclosure, FormControl, Input, FormLabel, Textarea, Stack, Box, Text
 } from '@chakra-ui/react'
 import { useState } from 'react';
-import { useTodoCreateMutation, useTodoUpdateMutation } from './api/TodoApi';
-const TodoUpdate = (props) => {
+import { useTodoCreateMutation } from '../api/TodoApi';
+const TodoAdd = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [data, setData] = useState({
-        id: props.id,
-        title: props.title,
-        category: props.category, description: props.description, custom_color_code: props.custom_color_code
-    });
+    const [data, setData] = useState({});
     const todoCreate = useTodoCreateMutation()
-    const todoUpdate = useTodoUpdateMutation()
     return (
         <>
             <Button onClick={onOpen} width={'200px'} ml={'auto'} mt={5}>Add</Button>
@@ -43,10 +38,9 @@ const TodoUpdate = (props) => {
                             <FormLabel mt={2}>Custom Color Coding</FormLabel>
                             <Input placeholder={'Paste color code here'} defaultValue={''} value={data['custom_color_code']}
                                 onChange={(e) => { setData({ ...data, custom_color_code: e.target.value }) }}></Input>
-                            <Button colorScheme='blue' mr={3} mt={5} onClick={() => { alert(JSON.stringify(data)); todoUpdate[0]({ ...data }) }}>
+                            <Button colorScheme='blue' mr={3} mt={5} onClick={() => { alert(JSON.stringify(data)); todoCreate[0](data) }}>
                                 Save
                             </Button>
-                            <Button colorScheme='red' mt={5} onClick={() => { }}>Delete</Button>
                         </FormControl>
                     </ModalBody>
                 </ModalContent>
@@ -55,4 +49,4 @@ const TodoUpdate = (props) => {
     )
 
 }
-export default TodoUpdate
+export default TodoAdd

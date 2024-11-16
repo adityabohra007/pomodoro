@@ -1,5 +1,5 @@
 import { Button, Center, Flex, HStack, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Text, Textarea, VStack } from '@chakra-ui/react';
-import { useCreateTaskMutation, useDeleteTaskMutation, useFetchTaskQuery, useTaskCheckOffMutation, useTaskCheckOffResetMutation, useTaskSelectMutation, useTaskSelectedQuery, useTasktimerQuery, useUpdateTaskMutation } from './taskApi'
+import { useCreateTaskMutation, useDeleteTaskMutation, useFetchTaskQuery, useTaskCheckOffMutation, useTaskCheckOffResetMutation, useTaskSelectMutation, useTaskSelectedQuery, useTasktimerQuery, useUpdateTaskMutation } from '../api/taskApi'
 import { Box } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import { FiMoreVertical } from "react-icons/fi";
@@ -11,18 +11,9 @@ import {
     MenuList,
     MenuItem,
 } from '@chakra-ui/react'
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-} from '@chakra-ui/react'
 
-import { useTemplateSaveMutation } from './api/templateApi';
-import { TemplateSave, TemplateSelect } from './Template';
+import { useTemplateSaveMutation } from '../api/templateApi';
+import { TemplateSave, TemplateSelect } from '../Template';
 const TaskForm = (props) => {
     const creating = useCreateTaskMutation()
     const updating = useUpdateTaskMutation();

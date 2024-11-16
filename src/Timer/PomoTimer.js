@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import moment from 'moment';
 import { timerApi, useBreakTimerStartMutation, useBreakTimerStopMutation, useCompleteTimerMutation, usePauseTimerMutation, useResumeTimerMutation, useStartTimerMutation } from "../api/timerApi";
 import { Box, Center, Flex, Icon } from '@chakra-ui/react'
-import { taskApi } from "../taskApi";
+import { taskApi } from "../api/taskApi";
 import { Text } from '@chakra-ui/react'
 import { MdSkipNext } from "react-icons/md";
 import { useGetConfigQuery } from "../api/configApi";

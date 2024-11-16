@@ -2,7 +2,7 @@ import '@fontsource/ubuntu';
 import './App.css';
 import { useDispatch } from 'react-redux'
 
-import Task from './Task';
+import Task from './components/Task';
 import { useEffect, useState } from 'react';
 import { Box, Button, HStack, Text, } from '@chakra-ui/react'
 import { Center } from '@chakra-ui/react'
@@ -10,9 +10,9 @@ import { useGetConfigQuery } from './api/configApi';
 import { useStatusQuery } from './api/timerApi';
 import { useLogoutMutation } from './api/authApi';
 import { removeToken } from './authSlice';
-import BreakTimer from './BreakTimer';
+import BreakTimer from './components/BreakTimer';
 import PomoTimer from './Timer/PomoTimer';
-import { useTaskSelectedQuery } from './taskApi';
+import { useTaskSelectedQuery } from './api/taskApi';
 import { FaRegUserCircle } from "react-icons/fa";
 import {
     Menu,
@@ -20,8 +20,8 @@ import {
     MenuList,
     MenuItem,
 } from '@chakra-ui/react'
-import Configuration from './Configuration';
-import Dashboard from './Dashboard';
+import Configuration from './components/Configuration';
+import Dashboard from './components/Dashboard';
 const Main = () => {
     const dispatch = useDispatch()
     const [taskId, setTaskId] = useState(null) // from selected api

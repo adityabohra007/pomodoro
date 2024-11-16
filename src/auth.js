@@ -66,12 +66,12 @@ const Login = () => {
                         <Divider></Divider>
                     </Stack>
                     <Box>
-                        <h4>Error{JSON.stringify(login[1].error)}</h4>
+                        <p style={{ fontSize: '14px' }}>{login[1].error && 'Error: ' + login[1].error.data.non_field_errors[0]}</p>
                         <FormControl >
                             <FormLabel color={'gray'}>Email</FormLabel>
                             <Input placeholder="example@mail.com" width={'300px'} background={'#e8e8e8'} value={formData.email} onChange={(event) => { setFormData({ ...formData, 'email': event.target.value }) }}></Input>
                             <FormLabel mt={2} color={'gray'}>Password</FormLabel>
-                            <Input placeholder="Password" background={'#e8e8e8'} value={formData.password} onChange={(event) => { setFormData({ ...formData, 'password': event.target.value }) }}></Input>
+                            <Input type="password" placeholder="Password" background={'#e8e8e8'} value={formData.password} onChange={(event) => { setFormData({ ...formData, 'password': event.target.value }) }}></Input>
                         </FormControl>
 
                         <Button size={'sm'} width={'100%'} mt={5} p={6} background={'black'} color={'white'}
@@ -136,13 +136,13 @@ export const AuthChecker = (props) => {
             dispatch(removeToken)
         }
     }, [user[1].isError])
-    if (loading) return <Text>Loading1</Text>
+    if (loading) return <div style={{ backgroundColor: 'red', height: '100vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
+        <svg style={{ height: '50px', width: '50px', margin: 'auto' }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect fill="#FFFFFF" stroke="#FFFFFF" stroke-width="12" stroke-linejoin="round" width="30" height="30" x="85" y="85" rx="0" ry="0"><animate attributeName="rx" calcMode="spline" dur="1.4" values="15;15;5;15;15" keySplines=".5 0 .5 1;.8 0 1 .2;0 .8 .2 1;.5 0 .5 1" repeatCount="indefinite"></animate><animate attributeName="ry" calcMode="spline" dur="1.4" values="15;15;10;15;15" keySplines=".5 0 .5 1;.8 0 1 .2;0 .8 .2 1;.5 0 .5 1" repeatCount="indefinite"></animate><animate attributeName="height" calcMode="spline" dur="1.4" values="30;30;1;30;30" keySplines=".5 0 .5 1;.8 0 1 .2;0 .8 .2 1;.5 0 .5 1" repeatCount="indefinite"></animate><animate attributeName="y" calcMode="spline" dur="1.4" values="40;170;40;" keySplines=".6 0 1 .4;0 .8 .2 1" repeatCount="indefinite"></animate></rect></svg>
+    </div>
     if (user[1].isUninitialized || user[1].isError) {
         console.log('brooo');
-        // return redirect('/login')
         return <Navigate to={'/login'}></Navigate>
-        // return<h4>Loading</h4>
-        // return <Login></Login>
+
     }
     else {
         return props.children
@@ -152,8 +152,6 @@ export const AuthChecker = (props) => {
     //         return props.children
     //     }
 }
-// return <Login></Login>
-// }
 
 
 export default Login;

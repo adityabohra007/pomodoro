@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux"
 import { Button, Flex, Icon, IconButton, Link, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Stack, Text, Textarea } from '@chakra-ui/react';
-import { useCreateTaskMutation, useDeleteTaskMutation, useTaskCheckOffMutation, useUpdateTaskMutation } from './taskApi'
+import { useCreateTaskMutation, useDeleteTaskMutation, useTaskCheckOffMutation, useUpdateTaskMutation } from '../api/taskApi'
 import { Box } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import { FiMoreVertical } from "react-icons/fi";
@@ -9,7 +9,7 @@ import { Input } from '@chakra-ui/react';
 
 import { useNavigate } from "react-router";
 import TodoAdd from "./TodoAdd";
-import { useTodoGetListQuery } from "./api/TodoApi";
+import { useTodoGetListQuery } from "../api/TodoApi";
 const TaskForm = (props) => {
     const creating = useCreateTaskMutation()
     const updating = useUpdateTaskMutation();

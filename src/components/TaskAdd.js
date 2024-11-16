@@ -8,7 +8,7 @@ import {
     ModalCloseButton, Button, useDisclosure, FormControl, Input, FormLabel, Textarea, Stack, Box, Text
 } from '@chakra-ui/react'
 import { useState } from 'react';
-import { useTodoCreateMutation, useTodoListCreateMutation } from './api/TodoApi';
+import { useTodoCreateMutation, useTodoListCreateMutation } from '../api/TodoApi';
 const TaskAdd = (props) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()

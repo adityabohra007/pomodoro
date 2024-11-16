@@ -1,7 +1,7 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { timerApi } from './api/timerApi'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { taskApi } from './taskApi'
+import { taskApi } from './api/taskApi'
 import { configApi } from './api/configApi'
 import { authApi } from './api/authApi'
 import authReducer from './authSlice';

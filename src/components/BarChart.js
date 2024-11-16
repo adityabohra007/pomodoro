@@ -9,7 +9,7 @@ import {
 } from 'chart.js';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { useBarchartQuery } from './api/dashboardApi';
+import { useBarchartQuery } from '../api/dashboardApi';
 import {
     Button,
     VStack, ButtonGroup
