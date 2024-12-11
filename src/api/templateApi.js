@@ -26,6 +26,9 @@ export const templateApi = createApi({
         }),
         template: builder.query({
             query: () => ({ url: 'task/template', }),
+        }),
+        templateLoad:builder.query({
+            query:()=> ({url:'task/template'})
         })
         // createTask
     })

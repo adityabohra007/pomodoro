@@ -13,3 +13,11 @@ Functionality
 Day graph or bar graph
 Redux implementation
 
+
+
+# New idea
+Add tags on tasks with color coding
+Create a project
+Add timeline view like github
+Also add github api for coding if any
+

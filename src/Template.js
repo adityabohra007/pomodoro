@@ -46,7 +46,7 @@ export const TemplateSelect = ({ open, onClose, onSave }) => {
                     <ModalCloseButton />
                     <ModalBody>
                         {template.data.data.map(item =>
-                            <Text p={'2px 4px'} cursor={'pointer'} fontSize={20} border={'2px solid gray'} borderRadius={5} margin={4} _hover={{ 'color': 'gray' }}>{item.name}</Text>
+                            <Text p={'2px 4px'} cursor={'pointer'} fontSize={20} border={'2px solid gray'} borderRadius={5} margin={4} _hover={{ 'color': 'gray' }} onClick={() => { }}>{item.name}</Text>
                         )}
                     </ModalBody>
                     <ModalFooter>
