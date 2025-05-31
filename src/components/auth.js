@@ -1,12 +1,12 @@
 import { Box, Button, Center, Divider, FormControl, FormLabel, HStack, Icon, Input, Link, Stack, Text, VStack } from "@chakra-ui/react"
-import { useGoogleMutation, useLazyUserQuery, useLoginMutation } from "./api/authApi"
+import { useGoogleMutation, useLazyUserQuery, useLoginMutation } from "../api/authApi"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { addToken, removeToken } from "./authSlice"
+import { addToken, removeToken } from "../authSlice"
 import { GoogleLogin } from '@react-oauth/google';
 
 import { AiFillBuild } from "react-icons/ai";
-import { deleteCookie, getCookie, setCookie } from "./cookies"
+import { deleteCookie, getCookie, setCookie } from "../cookies"
 import { Navigate, redirect } from "react-router-dom"
 // import {} from 'react-router';
 const Login = () => {

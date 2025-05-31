@@ -3,8 +3,8 @@ import {
     createBrowserRouter,
 } from "react-router-dom";
 import "./index.css";
-import Login from "./auth";
-import { AuthChecker } from './auth';
+import Login from "./components/auth";
+import { AuthChecker } from './components/auth';
 import Main from "./main";
 import Todo from "./components/Todo";
 import { TodoDetail } from "./components/TodoDetail";
